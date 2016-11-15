@@ -9,3 +9,5 @@ export const hasNumbersChars = string => numbersRegex.test(string)
 
 const uppercaseCharsRegex = /[A-ZÀÁÄÂÃÈÉËÊÌÍÏÎÒÓÖÔÕÙÚÜÛÇ]/
 export const hasUppercaseChars = string => uppercaseCharsRegex.test(string)
+
+export const isEmptyObject = object => object instanceof Object && !Object.keys(object).length
