@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react'
+import { connect } from 'react-redux'
 import {
   StyleSheet,
   View,
@@ -15,7 +16,8 @@ import { MaterialIcons } from '@exponent/vector-icons'
 import ActionButton from 'react-native-action-button'
 
 import Router from '../Router'
-import { Card } from '../components'
+import { Card, EmptyList, Loading } from '../components'
+import { fetchTurmas } from '../utilities/fetchHelpers'
 
 class TurmasScreen extends Component {
   static route = {
@@ -28,7 +30,13 @@ class TurmasScreen extends Component {
     this.props.navigator.push(Router.getRoute(name));
   }
 
+  componentWillMount() {
+    const { turma: { loaded }, dispatch, credentials } = this.props
+    if (!loaded) fetchTurmas({ dispatch, credentials })
+  }
+
   render() {
+    const { turma: { loading, list } } = this.props
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -38,50 +46,33 @@ class TurmasScreen extends Component {
               Visualize e edite qualquer uma das turmas que você tem cadastrado
             </Text>
           </View>
-          <Card
-            image={{ uri: 'http://www.leandrocristianini.com.br/wp-content/uploads/2015/06/logoFIAP1.jpg' }}
-            imageStyle={{ backgroundColor: '#000' }}
-            universidadeName="Faculdade de Informática e Administração Paulista"
-            unidadeName="Paulista"
-            cursoName="Sistemas de Informação"
-            turmaName="3NSI"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
-          <Card
-            image={{ uri: 'http://www.leandrocristianini.com.br/wp-content/uploads/2015/06/logoFIAP1.jpg' }}
-            imageStyle={{ backgroundColor: '#000' }}
-            universidadeName="Faculdade de Informática e Administração Paulista"
-            unidadeName="Aclimação"
-            cursoName="Engenharia da Computação"
-            turmaName="4IEN"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
-          <Card
-            image={{ uri: 'http://www.expressaoonline.com.br/wp-content/uploads/2015/09/Logo-USJT-SE-PENSAR-BEM.png' }}
-            imageStyle={{ backgroundColor: '#04396b' }}
-            universidadeName="Universidade São Judas Tadeu"
-            unidadeName="Butantã"
-            cursoName="Ciência da Computação"
-            turmaName="4MCPN"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
-          <Card
-            image={{ uri: 'http://www.expressaoonline.com.br/wp-content/uploads/2015/09/Logo-USJT-SE-PENSAR-BEM.png' }}
-            imageStyle={{ backgroundColor: '#04396b' }}
-            universidadeName="Universidade São Judas Tadeu"
-            unidadeName="Mooca"
-            cursoName="Advocacia"
-            turmaName="2MADV"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
+          {!list.length ? (
+            <EmptyList
+              icon="insert-emoticon"
+              message="Não há nenhuma turma cadastrada"
+              buttonText="Comece cadastrando por aqui"
+              buttonPress={this._goToScreen('turmasCreate')}
+            />
+          ) : list.map(turma => (
+            <Card
+              key={`turma-list-card-${turma.id}`}
+              image={{
+                uri:
+                  turma.universidade.logo ||
+                  `https://placeholdit.imgix.net/~text?txtsize=180&txt=${turma.universidade.abreviacao.toUpperCase()}&w=640&h=300&txttrack=0`
+              }}
+              imageStyle={{}}
+              universidadeName={turma.universidade.nome}
+              unidadeName={turma.unidade.nome}
+              cursoName={turma.curso.nome}
+              turmaName={turma.nome}
+              buttonIconName="edit"
+              buttonText="EDITAR"
+              buttonOnPress={() => {
+                this.props.navigator.push(Router.getRoute('turmasCreate', turma))
+              }}
+            />
+          ))}
         </ScrollView>
 
         <ActionButton buttonColor="rgba(231,76,60,1)">
@@ -93,6 +84,7 @@ class TurmasScreen extends Component {
             <MaterialIcons name="add" style={styles.actionButtonIcon} />
           </ActionButton.Item>
         </ActionButton>
+        <Loading show={loading} />
       </View>
     )
   }
@@ -124,4 +116,9 @@ const styles = StyleSheet.create({
   },
 })
 
-export default TurmasScreen
+const mapStateToProps = state => ({
+  turma: state.turma,
+  credentials: state.authentication.credentials,
+})
+
+export default connect(mapStateToProps)(TurmasScreen)

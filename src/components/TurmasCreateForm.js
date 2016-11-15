@@ -4,7 +4,12 @@ import { Field, reduxForm } from 'redux-form'
 import { FormLabel, Button, CheckBox } from 'react-native-elements'
 import { StyleSheet, View } from 'react-native'
 
-import { ReduxFormInput } from './'
+import { ReduxFormInput, UniversidadePicker, UnidadePicker, CursoPicker } from '../components'
+import { isEmptyObject } from '../utilities/validationHelpers'
+import { initialPickerItem as initialUniversidadePickerItem } from '../reducers/UniversidadeReducer'
+import { initialPickerItem as initialUnidadePickerItem } from '../reducers/UnidadeReducer'
+import { initialPickerItem as initialCursoPickerItem } from '../reducers/CursoReducer'
+import { save } from '../utilities/turmaHelpers'
 
 class TurmasCreateForm extends Component {
   render() {
@@ -15,10 +20,44 @@ class TurmasCreateForm extends Component {
       submitting,
       touch,
       invalid,
+      update,
+      next,
+      universidade: { pickerSelected: universidadePickerSelected },
+      unidade: { pickerSelected: unidadePickerSelected },
+      curso: { pickerSelected: cursoPickerSelected },
     } = this.props
+
+    let selectedUniversidade = initialUniversidadePickerItem
+    if (!isEmptyObject(update)) selectedUniversidade = update.universidade
+
+    let selectedUnidade = initialUnidadePickerItem
+    if (!isEmptyObject(update)) selectedUnidade = update.unidade
+
+    let selectedCurso = initialCursoPickerItem
+    if (!isEmptyObject(update)) selectedCurso = update.curso
 
     return (
       <View style={styles.container}>
+        <UniversidadePicker selected={selectedUniversidade} />
+        <UnidadePicker
+          selected={selectedUnidade}
+          filter={
+            unidade => (
+              universidadePickerSelected instanceof Object &&
+              unidade.universidade.id === universidadePickerSelected.id
+            ) || !unidade.id
+          }
+        />
+        <CursoPicker
+          selected={selectedCurso}
+          filter={
+            curso => (
+              unidadePickerSelected instanceof Object &&
+              curso instanceof Object && curso.unidade instanceof Object &&
+              curso.unidade.id === unidadePickerSelected.id
+            ) || !curso.id
+          }
+        />
         <Field
           {...this.props}
           name="nome"
@@ -54,10 +93,9 @@ class TurmasCreateForm extends Component {
           disabled={invalid}
           buttonStyle={styles.submitButton}
           onPress={
-            handleSubmit((values, dispatch, props) => {
-              console.log("handling submit")
-              console.log(values)
-              console.log(props)
+            handleSubmit(fields => {
+              const values = { ...fields, curso_id: cursoPickerSelected.id }
+              save({ values, ...this.props, next })
             })
           }
         />
@@ -88,10 +126,12 @@ TurmasCreateForm = reduxForm({
   validate,
 })(TurmasCreateForm)
 
-TurmasCreateForm = connect(
-  state => ({
-    initialValues: state.turmas || { nome: null },
-  })
-)(TurmasCreateForm)
+const mapStateToProps = state => ({
+  universidade: state.universidade,
+  unidade: state.unidade,
+  curso: state.curso,
+})
+
+TurmasCreateForm = connect(mapStateToProps)(TurmasCreateForm)
 
 export default TurmasCreateForm
