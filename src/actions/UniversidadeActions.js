@@ -29,3 +29,7 @@ export const requestUniversidadeDestroy = () => ({ type: REQUEST_UNIVERSIDADE_DE
 export const successUniversidadeDestroy = universidade =>
   ({ type: SUCCESS_UNIVERSIDADE_DESTROY, universidade })
 export const failureUniversidadeDestroy = error => ({ type: FAILURE_UNIVERSIDADE_DESTROY, error })
+
+export const UNIVERSIDADE_PICKER_SET_SELECTED = 'UNIVERSIDADE_PICKER_SET_SELECTED'
+export const setUniversidadePickerSelected = selected =>
+  ({ type: UNIVERSIDADE_PICKER_SET_SELECTED, selected })

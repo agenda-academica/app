@@ -20,30 +20,32 @@ import {
   failureUniversidadeDestroy,
 } from '../actions/UniversidadeActions'
 import * as Navigation from '../Navigation'
+import { isEmptyObject } from '../utilities/validationHelpers'
 
 class UniversidadesCreateScreen extends Component {
   static route = {
     navigationBar: {
       title: 'Universidades',
-      renderRight: (route, props) =>
-        !route.params || !Object.keys(route.params).length ? <View></View> : (
+      renderRight: ({ params }) =>
+        isEmptyObject(params) ? <View></View> : (
           <DestroyAlert
             title="Excluir Universidade"
             message={
               'Tem certeza que deseja excluir esta universidade? Esta ação é permanente e, após'
               + ' a confirmação, não será possível reverter. Ao excluir a universidade, todos os'
               + ' dados de Unidades, Cursos, Turmas, Disciplinas e Eventos relacionados a esta'
-              + ' universidade, também serão excluídos. Deseja confirmar?'
+              + ' universidade, também serão excluídos. Deseja continuar?'
             }
-            yesOnPress={({ dispatch, credentials, redir }) => {
+            entity={params}
+            yesOnPress={({ dispatch, credentials, next }) => {
               const method = 'DELETE'
               const headers = { ...applicationJSON, ...credentials }
               dispatch(requestUniversidadeDestroy())
-              return fetch(`${API_URL}/universidades/${route.params.id}`, { method, headers })
+              return fetch(`${API_URL}/universidades/${params.id}`, { method, headers })
                 .then(res => {
                   res.json().then(data => {
                     dispatch(successUniversidadeDestroy(data))
-                    redir()
+                    next()
                   })
                 })
                 .catch(error => dispatch(failureUniversidadeDestroy(error)))

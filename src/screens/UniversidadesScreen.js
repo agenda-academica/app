@@ -14,16 +14,13 @@ import {
 } from '@exponent/ex-navigation'
 import { MaterialIcons } from '@exponent/vector-icons'
 import ActionButton from 'react-native-action-button'
+import { Button } from 'react-native-elements'
 
 import Router from '../Router'
-import { Card, Loading } from '../components'
+import { Card, Loading, EmptyList } from '../components'
 import { API_URL } from '../constants/api'
 import { applicationJSON } from '../utilities/requestHelpers'
-import {
-  requestUniversidadeFetch,
-  successUniversidadeFetch,
-  failureUniversidadeFetch,
-} from '../actions/UniversidadeActions'
+import { fetchUniversidades } from '../utilities/fetchHelpers'
 
 class UniversidadesScreen extends Component {
   static route = {
@@ -33,19 +30,8 @@ class UniversidadesScreen extends Component {
   }
 
   componentDidMount() {
-    const { loaded } = this.props
-    !loaded && this.fetchUniversidades()
-  }
-
-  fetchUniversidades() {
-    const { dispatch, credentials } = this.props
-
-    dispatch(requestUniversidadeFetch())
-    const method = 'GET'
-    const headers = { ...applicationJSON, ...credentials }
-    fetch(`${API_URL}/universidades`, { method, headers })
-      .then(res => res.json().then(data => dispatch(successUniversidadeFetch(data))))
-      .catch(error => dispatch(failureUniversidadeFetch(error)))
+    const { loaded, dispatch, credentials } = this.props
+    !loaded && fetchUniversidades({ dispatch, credentials })
   }
 
   _goToScreen = name => () => {
@@ -53,7 +39,7 @@ class UniversidadesScreen extends Component {
   }
 
   render() {
-    const { universidade: { loading, loaded, list } } = this.props
+    const { universidade: { loading, list } } = this.props
 
     return (
       <View style={styles.container}>
@@ -64,7 +50,14 @@ class UniversidadesScreen extends Component {
               Visualize e edite qualquer uma das universidades que você tem cadastrado
             </Text>
           </View>
-          {!list.length ? <Text>Empty List</Text> : list.map(universidade => (
+          {!list.length ? (
+            <EmptyList
+              icon="account-balance"
+              message="Não há nenhuma universidade cadastrada"
+              buttonText="Comece cadastrando por aqui"
+              buttonPress={this._goToScreen('universidadesCreate')}
+            />
+          ) : list.map(universidade => (
             <Card
               key={`universidade-list-card-${universidade.id}`}
               image={{

@@ -17,6 +17,7 @@ import { uploadImage } from '../actions/UploadAction'
 import { ReduxFormInput } from './'
 import { API_URL } from '../constants/api'
 import { applicationJSON } from '../utilities/requestHelpers'
+import { isEmptyObject } from '../utilities/validationHelpers'
 import {
   requestUniversidadeCreate,
   successUniversidadeCreate,
@@ -30,13 +31,8 @@ import {
 class UniversidadesCreateForm extends Component {
   _save({ values, logo }) {
     const { update } = this.props
-    console.log('update', update)
-    console.log(!update)
-    if (update instanceof Object) {
-      if (!Object.keys(update).length) this._create({ values, logo })
-      else this._update({ values, logo })
-    }
-    else Alert.alert('Erro ):', 'Objeto de criação de universidade corrompido.', [{ text: 'Ok' }])
+    if (isEmptyObject(update)) this._create({ values, logo })
+    else this._update({ values, logo })
   }
 
   _create({ values, logo }) {
