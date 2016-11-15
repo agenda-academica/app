@@ -1,4 +1,3 @@
-import { UPLOAD_IMAGE } from '../actions/UploadAction'
 import {
   REQUEST_UNIVERSIDADE_CREATE,
   SUCCESS_UNIVERSIDADE_CREATE,
@@ -15,15 +14,20 @@ import {
   REQUEST_UNIVERSIDADE_DESTROY,
   SUCCESS_UNIVERSIDADE_DESTROY,
   FAILURE_UNIVERSIDADE_DESTROY,
+
+  UNIVERSIDADE_PICKER_SET_SELECTED,
 } from '../actions/UniversidadeActions'
+
+export const initialPickerItem = { id: 0, abreviacao: '----------' }
 
 const initialState = {
   loading: false,
   loaded: false,
-  list: []
+  list: [],
+  pickerSelected: initialPickerItem,
 }
 
-export default upload = function(state = initialState, action) {
+export default UniversidadeReducer = function(state = initialState, action) {
   let index
   let list
   switch (action.type) {
@@ -63,6 +67,9 @@ export default upload = function(state = initialState, action) {
       return { ...state, loading: false, list }
     case FAILURE_UNIVERSIDADE_DESTROY:
       return { ...state, loading: false, error: action.error }
+
+    case UNIVERSIDADE_PICKER_SET_SELECTED:
+      return { ...state, pickerSelected: action.selected }
 
     default:
       return state

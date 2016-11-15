@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react'
+import { connect } from 'react-redux'
 import {
   StyleSheet,
   View,
@@ -15,7 +16,8 @@ import { MaterialIcons } from '@exponent/vector-icons'
 import ActionButton from 'react-native-action-button'
 
 import Router from '../Router'
-import { Card } from '../components'
+import { Card, EmptyList, Loading } from '../components'
+import { fetchUnidades } from '../utilities/fetchHelpers'
 
 class UnidadesScreen extends Component {
   static route = {
@@ -28,7 +30,13 @@ class UnidadesScreen extends Component {
     this.props.navigator.push(Router.getRoute(name));
   }
 
+  componentWillMount() {
+    const { unidade: { loaded }, dispatch, credentials } = this.props
+    if (!loaded) fetchUnidades({ dispatch, credentials })
+  }
+
   render() {
+    const { unidade: { loading, list } } = this.props
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -38,42 +46,31 @@ class UnidadesScreen extends Component {
               Visualize e edite qualquer uma das unidades que você tem cadastrado
             </Text>
           </View>
-          <Card
-            image={{ uri: 'http://www.leandrocristianini.com.br/wp-content/uploads/2015/06/logoFIAP1.jpg' }}
-            imageStyle={{ backgroundColor: '#000' }}
-            universidadeName="Faculdade de Informática e Administração Paulista"
-            unidadeName="Paulista"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
-          <Card
-            image={{ uri: 'http://www.leandrocristianini.com.br/wp-content/uploads/2015/06/logoFIAP1.jpg' }}
-            imageStyle={{ backgroundColor: '#000' }}
-            universidadeName="Faculdade de Informática e Administração Paulista"
-            unidadeName="Aclimação"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
-          <Card
-            image={{ uri: 'http://www.expressaoonline.com.br/wp-content/uploads/2015/09/Logo-USJT-SE-PENSAR-BEM.png' }}
-            imageStyle={{ backgroundColor: '#04396b' }}
-            universidadeName="Universidade São Judas Tadeu"
-            unidadeName="Butantã"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
-          <Card
-            image={{ uri: 'http://www.expressaoonline.com.br/wp-content/uploads/2015/09/Logo-USJT-SE-PENSAR-BEM.png' }}
-            imageStyle={{ backgroundColor: '#04396b' }}
-            universidadeName="Universidade São Judas Tadeu"
-            unidadeName="Mooca"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
+          {!list.length ? (
+            <EmptyList
+              icon="place"
+              message="Não há nenhuma unidade cadastrada"
+              buttonText="Comece cadastrando por aqui"
+              buttonPress={this._goToScreen('unidadesCreate')}
+            />
+          ) : list.map(unidade => (
+            <Card
+              key={`unidade-list-card-${unidade.id}`}
+              image={{
+                uri:
+                  unidade.universidade.logo ||
+                  `https://placeholdit.imgix.net/~text?txtsize=180&txt=${unidade.universidade.abreviacao.toUpperCase()}&w=640&h=300&txttrack=0`
+              }}
+              imageStyle={{}}
+              universidadeName={unidade.universidade.nome}
+              unidadeName={unidade.nome}
+              buttonIconName="edit"
+              buttonText="EDITAR"
+              buttonOnPress={() => {
+                this.props.navigator.push(Router.getRoute('unidadesCreate', unidade))
+              }}
+            />
+          ))}
         </ScrollView>
 
         <ActionButton buttonColor="rgba(231,76,60,1)">
@@ -85,6 +82,7 @@ class UnidadesScreen extends Component {
             <MaterialIcons name="add" style={styles.actionButtonIcon} />
           </ActionButton.Item>
         </ActionButton>
+        <Loading show={loading} />
       </View>
     )
   }
@@ -116,4 +114,9 @@ const styles = StyleSheet.create({
   },
 })
 
-export default UnidadesScreen
+const mapStateToProps = state => ({
+  unidade: state.unidade,
+  credentials: state.authentication.credentials,
+})
+
+export default connect(mapStateToProps)(UnidadesScreen)
