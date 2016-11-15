@@ -1,0 +1,24 @@
+{
+  name: "Agenda Acadêmica",
+  description: "Agenda Acadêmica - Organização do dia a dia do professor.",
+  slug: "agenda-academica",
+  sdkVersion: "10.0.0",
+  version: "0.0.1",
+  orientation: "portrait",
+  primaryColor: "#005bb1",
+  iconUrl: "https://s3-sa-east-1.amazonaws.com/agenda-academica/agenda-academica-logo-circle.png",
+  notification: {
+    iconUrl: "https://s3-sa-east-1.amazonaws.com/agenda-academica/agenda-academica-logo-circle.png",
+    color: "#ffffff"
+  },
+  loading: {
+    iconUrl: "https://s3-sa-east-1.amazonaws.com/agenda-academica/agenda-academica-logo-circle.png",
+    hideExponentText: true
+  },
+  packagerOpts: {
+    assetExts: ["ttf"]
+  },
+  android: {
+    package: "br.com.agendaacademica.exp",
+  },
+}
