@@ -13,7 +13,10 @@ class DestroyAlert extends Component {
   }
 
   render() {
-    const { title, message, yesOnPress, dispatch, credentials } = this.props
+    const { title, message, yesOnPress, dispatch, credentials, entity } = this.props
+    const yesArgs = { dispatch, credentials, entity, next: this._goBack }
+    const no = { text: 'Não' }
+    const yes = { text: 'Sim', onPress: () => yesOnPress(yesArgs) }
 
     return (
       <MaterialIcons
@@ -24,14 +27,7 @@ class DestroyAlert extends Component {
           marginRight: 15,
           color: 'white',
         }}
-        onPress={() => {
-          Alert.alert(title, message,
-            [
-              { text: 'Não' },
-              { text: 'Sim', onPress: () => yesOnPress({ dispatch, credentials, redir: this._goBack }) },
-            ]
-          )
-        }}
+        onPress={() => Alert.alert(title, message, [no, yes])}
       />
     )
   }

@@ -35,7 +35,7 @@ class AuthenticationScreen extends Component {
           />
           <Image
             resizeMode='center'
-            source={require('../../assets/logo-outline-1.png')}
+            source={require('../../assets/logo-outline.png')}
             style={styles.logo}
           />
 

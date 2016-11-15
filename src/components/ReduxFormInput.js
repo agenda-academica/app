@@ -38,6 +38,12 @@ class ReduxFormInput extends Component {
           onChangeText={(value) => onChange(value)}
           value={value}
           placeholder={placeholder}
+          underlineColorAndroid={touched && !!error ? 'red' : '#ccc'}
+          inputStyle={{
+            borderWidth: 1,
+            borderColor: '#ccc',
+            borderStyle: 'solid',
+          }}
         />
       </View>
     )

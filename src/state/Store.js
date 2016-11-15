@@ -8,6 +8,10 @@ import {
   agendaAcademica,
   signup,
   universidade,
+  unidade,
+  curso,
+  turma,
+  disciplina,
   evento,
 } from '../reducers'
 
@@ -31,6 +35,10 @@ const store = createStoreWithNavigation(
     agendaAcademica,
     signup,
     universidade,
+    unidade,
+    curso,
+    turma,
+    disciplina,
     evento,
   }),
   applyMiddleware(thunk)
