@@ -4,7 +4,11 @@ import { Field, reduxForm } from 'redux-form'
 import { FormLabel, Button, CheckBox } from 'react-native-elements'
 import { StyleSheet, View } from 'react-native'
 
-import { ReduxFormInput } from './'
+import { ReduxFormInput, UniversidadePicker, UnidadePicker } from '../components'
+import { isEmptyObject } from '../utilities/validationHelpers'
+import { initialPickerItem as initialUniversidadePickerItem } from '../reducers/UniversidadeReducer'
+import { initialPickerItem as initialUnidadePickerItem } from '../reducers/UnidadeReducer'
+import { save } from '../utilities/cursoHelpers'
 
 class CursosCreateForm extends Component {
   render() {
@@ -15,10 +19,32 @@ class CursosCreateForm extends Component {
       submitting,
       touch,
       invalid,
+      dispatch,
+      next,
+      update,
+      // credentials,
+      universidade: { pickerSelected: universidadePickerSelected },
+      unidade: { pickerSelected: unidadePickerSelected },
     } = this.props
+
+    let selectedUniversidade = initialUniversidadePickerItem
+    if (!isEmptyObject(update)) selectedUniversidade = update.universidade
+
+    let selectedUnidade = initialUnidadePickerItem
+    if (!isEmptyObject(update)) selectedUnidade = update.unidade
 
     return (
       <View style={styles.container}>
+        <UniversidadePicker selected={selectedUniversidade} />
+        <UnidadePicker
+          selected={selectedUnidade}
+          filter={
+            unidade => (
+              universidadePickerSelected instanceof Object &&
+              unidade.universidade.id === universidadePickerSelected.id
+            ) || !unidade.id
+          }
+        />
         <Field
           {...this.props}
           name="nome"
@@ -43,13 +69,12 @@ class CursosCreateForm extends Component {
         <Button
           backgroundColor='#005bb1'
           title='CONTINUAR'
-          disabled={invalid}
+          disabled={invalid || (unidadePickerSelected instanceof Object && !unidadePickerSelected.id)}
           buttonStyle={styles.submitButton}
           onPress={
-            handleSubmit((values, dispatch, props) => {
-              console.log("handling submit")
-              console.log(values)
-              console.log(props)
+            handleSubmit(fields => {
+              const values = { ...fields, unidade_id: unidadePickerSelected.id }
+              save({ values, ...this.props, next })
             })
           }
         />
@@ -78,15 +103,14 @@ const validate = values => {
   return errors
 }
 
-CursosCreateForm = reduxForm({
-  form: 'cursosCreateForm',
-  validate,
-})(CursosCreateForm)
+CursosCreateForm = reduxForm({ form: 'cursosCreateForm', validate })(CursosCreateForm)
 
-CursosCreateForm = connect(
-  state => ({
-    initialValues: state.cursos || { nome: null },
-  })
-)(CursosCreateForm)
+const mapStateToProps = state => ({
+  universidade: state.universidade,
+  unidade: state.unidade,
+  // credentials: state.authentication.credentials,
+})
+
+CursosCreateForm = connect(mapStateToProps)(CursosCreateForm)
 
 export default CursosCreateForm

@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react'
+import { connect } from 'react-redux'
 import {
   StyleSheet,
   View,
@@ -15,12 +16,13 @@ import { MaterialIcons } from '@exponent/vector-icons'
 import ActionButton from 'react-native-action-button'
 
 import Router from '../Router'
-import { Card } from '../components'
+import { Card, EmptyList, Loading } from '../components'
+import { fetchCursos } from '../utilities/fetchHelpers'
 
 class CursosScreen extends Component {
   static route = {
     navigationBar: {
-      title: 'Unidades',
+      title: 'Cursos',
     },
   }
 
@@ -28,7 +30,13 @@ class CursosScreen extends Component {
     this.props.navigator.push(Router.getRoute(name));
   }
 
+  componentWillMount() {
+    const { curso: { loaded }, dispatch, credentials } = this.props
+    if (!loaded) fetchCursos({ dispatch, credentials })
+  }
+
   render() {
+    const { curso: { loading, list } } = this.props
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -38,46 +46,32 @@ class CursosScreen extends Component {
               Visualize e edite qualquer um dos cursos que você tem cadastrado
             </Text>
           </View>
-          <Card
-            image={{ uri: 'http://www.leandrocristianini.com.br/wp-content/uploads/2015/06/logoFIAP1.jpg' }}
-            imageStyle={{ backgroundColor: '#000' }}
-            universidadeName="Faculdade de Informática e Administração Paulista"
-            unidadeName="Paulista"
-            cursoName="Sistemas de Informação"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
-          <Card
-            image={{ uri: 'http://www.leandrocristianini.com.br/wp-content/uploads/2015/06/logoFIAP1.jpg' }}
-            imageStyle={{ backgroundColor: '#000' }}
-            universidadeName="Faculdade de Informática e Administração Paulista"
-            unidadeName="Aclimação"
-            cursoName="Engenharia da Computação"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
-          <Card
-            image={{ uri: 'http://www.expressaoonline.com.br/wp-content/uploads/2015/09/Logo-USJT-SE-PENSAR-BEM.png' }}
-            imageStyle={{ backgroundColor: '#04396b' }}
-            universidadeName="Universidade São Judas Tadeu"
-            unidadeName="Butantã"
-            cursoName="Ciência da Computação"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
-          <Card
-            image={{ uri: 'http://www.expressaoonline.com.br/wp-content/uploads/2015/09/Logo-USJT-SE-PENSAR-BEM.png' }}
-            imageStyle={{ backgroundColor: '#04396b' }}
-            universidadeName="Universidade São Judas Tadeu"
-            unidadeName="Mooca"
-            cursoName="Advocacia"
-            buttonIconName="edit"
-            buttonText="EDITAR"
-            buttonOnPress={() => { console.log('Card onPress') }}
-          />
+          {!list.length ? (
+            <EmptyList
+              icon="school"
+              message="Não há nenhum curso cadastrado"
+              buttonText="Comece cadastrando por aqui"
+              buttonPress={this._goToScreen('cursosCreate')}
+            />
+          ) : list.map(curso => (
+            <Card
+              key={`curso-list-card-${curso.id}`}
+              image={{
+                uri:
+                  curso.universidade.logo ||
+                  `https://placeholdit.imgix.net/~text?txtsize=180&txt=${curso.universidade.abreviacao.toUpperCase()}&w=640&h=300&txttrack=0`
+              }}
+              imageStyle={{}}
+              universidadeName={curso.universidade.nome}
+              unidadeName={curso.unidade.nome}
+              cursoName={curso.nome}
+              buttonIconName="edit"
+              buttonText="EDITAR"
+              buttonOnPress={() => {
+                this.props.navigator.push(Router.getRoute('cursosCreate', curso))
+              }}
+            />
+          ))}
         </ScrollView>
 
         <ActionButton buttonColor="rgba(231,76,60,1)">
@@ -89,6 +83,7 @@ class CursosScreen extends Component {
             <MaterialIcons name="add" style={styles.actionButtonIcon} />
           </ActionButton.Item>
         </ActionButton>
+        <Loading show={loading} />
       </View>
     )
   }
@@ -120,4 +115,9 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CursosScreen
+const mapStateToProps = state => ({
+  curso: state.curso,
+  credentials: state.authentication.credentials,
+})
+
+export default connect(mapStateToProps)(CursosScreen)
