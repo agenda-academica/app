@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   StyleSheet,
   View,
@@ -15,9 +16,12 @@ import { MaterialIcons } from '@exponent/vector-icons'
 import ActionButton from 'react-native-action-button'
 
 import Router from '../Router'
-import { Card } from '../components'
+import { Card, Loading } from '../components'
+import { fetchDisciplinas } from '../utilities/fetchHelpers'
+import { dateFormat } from '../utilities/dateHelpers'
+import placeholdit from '../constants/placeholdit'
 
-export default class HomeScreen extends Component {
+class HomeScreen extends Component {
   static route = {
     navigationBar: {
       title: 'Quadro de horário',
@@ -26,7 +30,8 @@ export default class HomeScreen extends Component {
   }
 
   componentWillMount() {
-    console.log('[HomeScreen]: componentWillMount method')
+    const { dispatch, credentials, disciplina: { loaded } } = this.props
+    !loaded && fetchDisciplinas({ dispatch, credentials })
   }
 
   _renderLabel = ({route}) => {
@@ -46,7 +51,36 @@ export default class HomeScreen extends Component {
     this.props.navigator.push(Router.getRoute(name));
   }
 
+  _weekdayCards(weekday) {
+    const { disciplina: { list } } = this.props
+    return list.filter(disciplina => disciplina.dia_semana === weekday).map(disciplina => (
+      <Card
+        key={`disciplina-terca-${disciplina.id}`}
+        image={{
+          uri:
+            disciplina.universidade.logo ||
+            placeholdit.card(disciplina.universidade.abreviacao.toUpperCase())
+        }}
+        title={disciplina.nome}
+        subtitle={dateFormat.hhmm(new Date(disciplina.hora_inicio), 'h')}
+        universidadeName={disciplina.universidade.nome}
+        unidadeName={disciplina.unidade.nome}
+        cursoName={disciplina.curso.nome}
+        turmaName={disciplina.turma.nome}
+        disciplinaName={disciplina.nome}
+        buttonIconName="remove-red-eye"
+        buttonText="VIEW NOW"
+        buttonOnPress={() => {
+          this.props.navigator.push(Router.getRoute('disciplinasCreate', disciplina))
+        }}
+      />
+    ))
+  }
+
   render() {
+    const { disciplina: { loading, list, loaded } } = this.props
+    console.log('list', list)
+    if (!loaded || loading) return <Loading show={true} />
     return (
       <View style={styles.container}>
         <SlidingTabNavigation
@@ -58,90 +92,31 @@ export default class HomeScreen extends Component {
           indicatorStyle={styles.tabIndicator}
         >
           <SlidingTabNavigationItem id="0">
-            <ScrollView>
-              <Card
-                image={{ uri: 'http://www.expressaoonline.com.br/wp-content/uploads/2015/09/Logo-USJT-SE-PENSAR-BEM.png' }}
-                imageStyle={{ backgroundColor: '#04396b' }}
-                title="Inteligência Artificial"
-                subtitle="19h20"
-                universidadeName="Universidade São Judas Tadeu"
-                unidadeName="Butantã"
-                cursoName="Sistemas de Informação"
-                turmaName="4MSIN"
-                disciplinaName="Inteligência Artificial"
-                buttonIconName="remove-red-eye"
-                buttonText="VISUALIZAR"
-                buttonOnPress={() => { console.log('Card onPress') }}
-              />
-              <Card
-                image={{ uri: 'https://s3-sa-east-1.amazonaws.com/agenda-academica/fiap-logo_.jpg' }}
-                imageStyle={{ backgroundColor: '#04396b' }}
-                title="Sistemas Especialistas"
-                subtitle="21h00"
-                universidadeName="Faculdade de Informática e Administração Paulista"
-                unidadeName="Paulista"
-                cursoName="Sistemas de Informação"
-                turmaName="3NSI"
-                disciplinaName="Sistemas Especialistas"
-                buttonIconName="remove-red-eye"
-                buttonText="VISUALIZAR"
-                buttonOnPress={() => { console.log('Card onPress') }}
-              />
-            </ScrollView>
+            <ScrollView>{this._weekdayCards(0)}</ScrollView>
           </SlidingTabNavigationItem>
 
           <SlidingTabNavigationItem id="1">
-            <ScrollView>
-              <Card
-                image={{ uri: 'http://www.expressaoonline.com.br/wp-content/uploads/2015/09/Logo-USJT-SE-PENSAR-BEM.png' }}
-                imageStyle={{ backgroundColor: '#04396b' }}
-                title="Inteligência Artificial"
-                subtitle="19h20"
-                universidadeName="Universidade São Judas Tadeu"
-                unidadeName="Butantã"
-                cursoName="Sistemas de Informação"
-                turmaName="4MSIN"
-                disciplinaName="Inteligência Artificial"
-                buttonIconName="remove-red-eye"
-                buttonText="VIEW NOW"
-                buttonOnPress={() => { console.log('Card onPress') }}
-              />
-            </ScrollView>
+            <ScrollView>{this._weekdayCards(1)}</ScrollView>
           </SlidingTabNavigationItem>
+
           <SlidingTabNavigationItem id="2">
-            <View style={styles.quoteContainer}>
-              <Text style={styles.quoteMarks}>“</Text>
-              <Text style={styles.quoteText}>The best thing about a boolean is even if you are wrong, you are only off by a bit.</Text>
-              <Text style={styles.quoteAuthor}>Bryan</Text>
-            </View>
+            <ScrollView>{this._weekdayCards(2)}</ScrollView>
           </SlidingTabNavigationItem>
+
           <SlidingTabNavigationItem id="3">
-            <View style={styles.quoteContainer}>
-              <Text style={styles.quoteMarks}>“</Text>
-              <Text style={styles.quoteText}>The best thing about a boolean is even if you are wrong, you are only off by a bit.</Text>
-              <Text style={styles.quoteAuthor}>Bryan</Text>
-            </View>
+            <ScrollView>{this._weekdayCards(3)}</ScrollView>
           </SlidingTabNavigationItem>
+
           <SlidingTabNavigationItem id="4">
-            <View style={styles.quoteContainer}>
-              <Text style={styles.quoteMarks}>“</Text>
-              <Text style={styles.quoteText}>The best thing about a boolean is even if you are wrong, you are only off by a bit.</Text>
-              <Text style={styles.quoteAuthor}>Bryan</Text>
-            </View>
+            <ScrollView>{this._weekdayCards(4)}</ScrollView>
           </SlidingTabNavigationItem>
+
           <SlidingTabNavigationItem id="5">
-            <View style={styles.quoteContainer}>
-              <Text style={styles.quoteMarks}>“</Text>
-              <Text style={styles.quoteText}>The best thing about a boolean is even if you are wrong, you are only off by a bit.</Text>
-              <Text style={styles.quoteAuthor}>Bryan</Text>
-            </View>
+            <ScrollView>{this._weekdayCards(5)}</ScrollView>
           </SlidingTabNavigationItem>
+
           <SlidingTabNavigationItem id="6">
-            <View style={styles.quoteContainer}>
-              <Text style={styles.quoteMarks}>“</Text>
-              <Text style={styles.quoteText}>The best thing about a boolean is even if you are wrong, you are only off by a bit.</Text>
-              <Text style={styles.quoteAuthor}>Bryan</Text>
-            </View>
+            <ScrollView>{this._weekdayCards(6)}</ScrollView>
           </SlidingTabNavigationItem>
         </SlidingTabNavigation>
 
@@ -149,11 +124,12 @@ export default class HomeScreen extends Component {
           <ActionButton.Item
             buttonColor='#9b59b6'
             title="Adicionar aula"
-            onPress={this._goToScreen('universidadesCreate')}
+            onPress={this._goToScreen('disciplinasCreate')}
           >
             <MaterialIcons name="add" style={styles.actionButtonIcon} />
           </ActionButton.Item>
         </ActionButton>
+        <Loading show={loading} />
       </View>
     )
   }
@@ -215,3 +191,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#0084FF',
   },
 })
+
+const mapStateToProps = state => ({
+  disciplina: state.disciplina,
+  credentials: state.authentication.credentials,
+})
+
+export default connect(mapStateToProps)(HomeScreen)
