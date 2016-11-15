@@ -47,7 +47,7 @@ class CalendarioScreen extends Component {
           animationType={"slide"}
           transparent={true}
           visible={this.state.modalVisible}
-          onRequestClose={() => {console.log()("Modal has been closed.")}}
+          onRequestClose={() => this.setModalVisible(false)}
         >
          <ScrollView style={{ paddingHorizontal: 20, backgroundColor: 'rgba(0,0,0,.6)' }}>
           <View style={{ paddingBottom: 20, paddingTop: 20, backgroundColor: 'white' }}>
