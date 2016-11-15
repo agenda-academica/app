@@ -12,17 +12,8 @@ import Router from './Router';
 const navigationContext = new NavigationContext({ router: Router, store: Store })
 
 const assets = [
-  require('../assets/beetle.jpg'),
-  require('../assets/cat.gif'),
-  require('../assets/colorful-windows.jpg'),
-  require('../assets/paintbrush.jpg'),
-  require('../assets/space.jpg'),
-  require('../assets/sparkles.jpg'),
   require('../assets/background.jpg'),
-  require('../assets/logo-circle.png'),
-  require('../assets/logo-diamond.png'),
   require('../assets/logo-outline.png'),
-  require('../assets/logo-outline-1.png'),
 ]
 class App extends Component {
   state = {
@@ -34,12 +25,9 @@ class App extends Component {
   }
 
   _bootstrap = async () => {
-    const { dispatch } = this.props
     const promises = assets.map(module => Asset.fromModule(module).downloadAsync())
     await Promise.all(promises)
-    this.setState({
-      bootstrapped: true,
-    })
+    this.setState({ bootstrapped: true })
   }
 
   componentWillMount() {
