@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { Asset, Components } from 'exponent'
-import { DeviceEventEmitter } from 'react-native'
 import { NavigationContext, NavigationProvider } from '@exponent/ex-navigation'
+import { DeviceEventEmitter } from 'react-native'
 
-import registerForPushNotificationsAsync from './api/registerForPushNotificationsAsync'
 import AgendaAcademica from './containers/AgendaAcademica';
 import Store from './state/Store'
 import Router from './Router';
@@ -24,16 +23,7 @@ class App extends Component {
     this._bootstrap()
   }
 
-  _bootstrap = async () => {
-    const promises = assets.map(module => Asset.fromModule(module).downloadAsync())
-    await Promise.all(promises)
-    this.setState({ bootstrapped: true })
-  }
-
   componentWillMount() {
-    // Send our push token over to our backend so we can receive notifications
-    registerForPushNotificationsAsync()
-
     // If we started the app from a push notification, handle it right away
     if (this.props.exp.notification) {
       this._handleNotification(this.props.exp.notification)
@@ -49,8 +39,14 @@ class App extends Component {
     this._notificationSubscription.remove()
   }
 
-  _handleNotification = (notification) => {
+  _handleNotification = notification => {
     console.log('App: _handleNotification [notification]', { notification })
+  }
+
+  _bootstrap = async () => {
+    const promises = assets.map(module => Asset.fromModule(module).downloadAsync())
+    await Promise.all(promises)
+    this.setState({ bootstrapped: true })
   }
 
   render() {

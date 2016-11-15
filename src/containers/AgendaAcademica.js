@@ -9,7 +9,6 @@ import DrawerNavigationExample from '../../components/DrawerNavigationExample'
 export class AgendaAcademica extends Component {
   render() {
     const { hasAuthenticated } = this.props
-    console.log('hasAuthenticated', hasAuthenticated)
     return !hasAuthenticated ? (
       <NavigationProvider router={Router}>
         <StackNavigation initialRoute={Router.getRoute('authentication')} />
@@ -23,10 +22,8 @@ export class AgendaAcademica extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    hasAuthenticated: state.authentication.hasAuthenticated,
-  }
-}
+const mapStateToProps = state => ({
+  hasAuthenticated: state.authentication.hasAuthenticated,
+})
 
 export default connect(mapStateToProps)(AgendaAcademica)

@@ -25,7 +25,6 @@ export class LoginFormScreen extends Component {
     this.props.navigator.push(Router.getRoute('home'))
     this.props.navigation.performAction(({ tabs, stacks }) => {
       const { currentNavigatorUID } = this.props.navigation.navigationState;
-      console.log('currentNavigatorUID', currentNavigatorUID)
       // Reset route stack if scene is not on initial <TabNavigationItem> route
       // In my case I used an id of "main" in my <TabNavigation>
       if (this.props.navigation.navigationState.currentNavigatorUID !== 'main') {

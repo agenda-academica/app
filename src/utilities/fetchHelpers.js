@@ -27,9 +27,9 @@ import {
 } from '../actions/DisciplinaActions'
 
 export const mockCredentials = {
-  'access-token': 'WG3D99lUwKy4FvGFKQxqew',
-  'client': 'xjJrEPzfkc-h73bRYKL48w',
-  'expiry': '1480449346',
+  'access-token': 'U0H6ZASH4UdMAT2IAzaGGA',
+  'client': 'qYfD9ZgCJF4L-ysor6rWEQ',
+  'expiry': '1480454278',
   'token-type': 'Bearer',
   'uid': 'gabrielrtakeda@gmail.com',
 }

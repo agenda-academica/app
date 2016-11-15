@@ -12,6 +12,7 @@ import {
   failureLoginAuthentication,
 } from '../actions/AuthenticationAction'
 import { isValidEmail } from '../utilities/validationHelpers'
+import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync'
 
 class LoginForm extends Component {
   render() {
@@ -61,7 +62,6 @@ class LoginForm extends Component {
                 },
                 body: JSON.stringify(values),
               }).then(res => {
-                console.log('LoginForm response:', res)
                 const body = JSON.parse(res._bodyText)
                 if (body.errors && body.errors.length)
                   dispatch(failureLoginAuthentication(body.errors[0]))
@@ -75,12 +75,10 @@ class LoginForm extends Component {
                     'uid': map['uid'],
                   }
                   dispatch(successLoginAuthentication(credentials))
+                  registerForPushNotificationsAsync(credentials)
                   successRedirect()
                 }
-              }).catch(error => {
-                dispatch(failureLoginAuthentication(error))
-                console.log(error)
-              })
+              }).catch(error => dispatch(failureLoginAuthentication(error)))
             })
           }
         />

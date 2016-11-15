@@ -2,11 +2,9 @@ import { Platform } from 'react-native'
 import { Permissions, Notifications } from 'exponent'
 
 import { API_URL } from '../constants/api'
+import { applicationJSON } from '../utilities/requestHelpers'
 
-// Example server, implemented in Rails: https://git.io/vKHKv
-const PUSH_ENDPOINT = `${API_URL}/tokens`
-
-export default async function registerForPushNotificationsAsync() {
+export default async function registerForPushNotificationsAsync(credentials) {
   // Android remote notification permissions are granted during the app
   // install, so this will only ask on iOS
   let { status } = await Permissions.askAsync(Permissions.REMOTE_NOTIFICATIONS)
@@ -18,16 +16,8 @@ export default async function registerForPushNotificationsAsync() {
   let token = await Notifications.getExponentPushTokenAsync()
 
   // POST the token to our backend so we can use it to send pushes from there
-  return fetch(PUSH_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      token: {
-        value: token,
-       },
-    }),
-  })
+  const method = 'POST'
+  const headers = { ...applicationJSON, ...credentials }
+  const body = JSON.stringify({ token: { value: token } })
+  return fetch(`${API_URL}/tokens`, { method, headers, body })
 }

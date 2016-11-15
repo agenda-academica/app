@@ -62,7 +62,7 @@ class HomeScreen extends Component {
             placeholdit.card(disciplina.universidade.abreviacao.toUpperCase())
         }}
         title={disciplina.nome}
-        subtitle={dateFormat.hhmm(new Date(disciplina.hora_inicio), 'h')}
+        subtitle={disciplina.hora_inicio.replace(/^.*T(\d{2}):(\d{2}).*$/, '$1h$2')}
         universidadeName={disciplina.universidade.nome}
         unidadeName={disciplina.unidade.nome}
         cursoName={disciplina.curso.nome}
@@ -79,7 +79,6 @@ class HomeScreen extends Component {
 
   render() {
     const { disciplina: { loading, list, loaded } } = this.props
-    console.log('list', list)
     if (!loaded || loading) return <Loading show={true} />
     return (
       <View style={styles.container}>
