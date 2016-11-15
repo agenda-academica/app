@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 import Exponent from 'exponent'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
-import { FormLabel, FormInput, Button, ButtonGroup } from 'react-native-elements'
+import { FormLabel, FormInput, Button, ButtonGroup, List, ListItem } from 'react-native-elements'
 import ReactNative, {
   StyleSheet,
   Text,
@@ -11,8 +11,10 @@ import ReactNative, {
   Alert,
   Picker,
   Switch,
-  DatePickerAndroid
+  DatePickerAndroid,
+  TimePickerAndroid,
 } from 'react-native'
+import { FontAwesome } from '@exponent/vector-icons'
 import { RNS3 } from 'react-native-aws3'
 import md5 from 'md5'
 
@@ -37,6 +39,12 @@ import {
   setCurso,
   setTurma,
   setDisciplina,
+  setType,
+  setDataInicio,
+  setDataFim,
+  setHoraInicio,
+  setHoraFim,
+  setNotifyPeriod,
 } from '../actions/EventoActions'
 
 class EventoForm extends Component {
@@ -88,30 +96,27 @@ class EventoForm extends Component {
       .catch(error => dispatch(failureUniversidadeUpdate(error)))
   }
 
-  state = {
-    presetDate: new Date(2020, 4, 5),
-    allDate: new Date(2020, 4, 5),
-    simpleText: 'pick a date',
-    minText: 'pick a date, no earlier than today',
-    maxText: 'pick a date, no later than today',
-    presetText: 'pick a date, preset to 2020/5/5',
-    allText: 'pick a date between 2020/5/1 and 2020/5/10',
-    dateStart: new Date(),
-    dateEnd: new Date(),
-  };
-
-  showPicker = async (stateKey, options) => {
+  showPicker = async (ref, dispatch, options) => {
+    console.log('this.state', this.state)
+    console.log('this.props', this.props)
     try {
-      var newState = {};
-      const {action, year, month, day} = await DatePickerAndroid.open(options);
-      if (action === DatePickerAndroid.dismissedAction) {
-        newState[stateKey + 'Text'] = 'dismissed';
-      } else {
+      const { action, year, month, day } = await DatePickerAndroid.open(options)
+      console.log('action, year, month, day', action, year, month, day)
+      console.log('ref', ref)
+      console.log('dispatch', dispatch)
+      if (!action === DatePickerAndroid.dismissedAction) {
         var date = new Date(year, month, day);
-        newState[stateKey + 'Text'] = date.toLocaleDateString();
-        newState[stateKey + 'Date'] = date;
+        if (ref === 'inicio') dispatch(setDataInicio(date))
+        else if (ref === 'fim') dispatch(setDataFim(date))
       }
-      this.setState(newState);
+      // if (action === DatePickerAndroid.dismissedAction) {
+      //   newState[stateKey + 'Text'] = 'dismissed';
+      // } else {
+      //   var date = new Date(year, month, day);
+      //   newState[stateKey + 'Text'] = date.toLocaleDateString();
+      //   newState[stateKey + 'Date'] = date;
+      // }
+      // this.setState(newState);
     } catch ({code, message}) {
       console.warn(`Error in example '${stateKey}': `, message);
     }
@@ -129,10 +134,22 @@ class EventoForm extends Component {
       imageUpload,
       credentials,
       successRedirect,
-      evento: { attach, universidade, unidade, curso, turma, disciplina },
+      evento: {
+        attach,
+        universidade,
+        unidade,
+        curso,
+        turma,
+        disciplina,
+        eventoType,
+        dataInicio,
+        dataFim,
+        horaInicio,
+        horaFim,
+        notifyPeriod,
+      },
     } = this.props
     const { update } = this.props
-    const { dateStart, dateEnd } = this.state
 
     const imageUploadUri = !!imageUpload && imageUpload.uri
     const imagePlaceholder = 'https://placeholdit.imgix.net/~text?txtsize=33&txt=150%C3%97150'
@@ -223,10 +240,48 @@ class EventoForm extends Component {
         }
         <FormLabel>Tipo de evento</FormLabel>
         <ButtonGroup
-          onPress={value => { console.log(value) }}
-          selectedIndex={0}
+          onPress={value => dispatch(setType(value))}
+          selectedIndex={eventoType}
           buttons={['Prova', 'Trabalho', 'Outros']}
         />
+        <FormLabel>Cor</FormLabel>
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingLeft: 15,
+            marginTop: 5,
+            alignItems: 'center',
+          }}
+        >
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <FontAwesome
+              name="circle"
+              color="#ad5000"
+              style={{
+                fontSize: 30,
+              }}
+            />
+          </View>
+          <View style={{ flex: 9 }}>
+            <Button
+              onPress={() => {
+                TimePickerAndroid.open({
+                  hour: horaInicio.getHours(),
+                  minute: horaInicio.getMinutes(),
+                  is24Hour: true,
+                }).then(data => {
+                  const { action, minute, hour } = data
+                  if (action === TimePickerAndroid.timeSetAction) {
+                    dispatch(setHoraInicio(new Date(0, 0, 0, hour, minute)))
+                  }
+                })
+              }}
+              title="Selecionar cor..."
+              small
+              buttonStyle={styles.buttonPicker}
+            />
+          </View>
+        </View>
         <Field
           {...this.props}
           name="titulo"
@@ -243,39 +298,107 @@ class EventoForm extends Component {
         />
         <View style={{ flex: 1, flexDirection: 'row' }}>
           <View style={{ flex: 2 }}>
-            <FormLabel>Data de início</FormLabel>
+            <FormLabel>Data início</FormLabel>
             <Button
-              onPress={this.showPicker.bind(this, 'simple', { date: this.state.dateStart })}
+              onPress={() => {
+                DatePickerAndroid.open({ date: dataInicio }).then(data => {
+                  const { action, year, month, day } = data
+                  if (action === DatePickerAndroid.dateSetAction) {
+                    dispatch(setDataInicio(new Date(year, month, day)))
+                  }
+                })
+              }}
               title={
-                pad(dateStart.getDate(), '00') +'/'+
-                pad(dateStart.getMonth(), '00') +'/'+
-                dateStart.getFullYear()
+                pad(dataInicio.getDate(), '00') +'/'+
+                pad(dataInicio.getMonth(), '00') +'/'+
+                dataInicio.getFullYear()
               }
               small
-              buttonStyle={{ marginTop: 10 }}
+              buttonStyle={styles.buttonPicker}
             />
           </View>
           <View style={{ flex: 2 }}>
-            <FormLabel>Data de início</FormLabel>
+            <FormLabel>Data fim</FormLabel>
             <Button
-              onPress={this.showPicker.bind(this, 'simple', { date: this.state.dateEnd })}
+              onPress={() => {
+                DatePickerAndroid.open({ date: dataFim, minDate: dataInicio }).then(data => {
+                  const { action, year, month, day } = data
+                  if (action === DatePickerAndroid.dateSetAction) {
+                    dispatch(setDataFim(new Date(year, month, day)))
+                  }
+                })
+              }}
               title={
-                pad(dateEnd.getDate(), '00') +'/'+
-                pad(dateEnd.getMonth(), '00') +'/'+
-                dateEnd.getFullYear()
+                pad(dataFim.getDate(), '00') +'/'+
+                pad(dataFim.getMonth(), '00') +'/'+
+                dataFim.getFullYear()
               }
               small
-              buttonStyle={{ marginTop: 10 }}
+              buttonStyle={styles.buttonPicker}
             />
           </View>
         </View>
-        <Field
-          {...this.props}
-          name="site"
-          component={ReduxFormInput}
-          label="Site"
-          placeholder="Ex: http://www.usjt.br"
-        />
+
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <View style={{ flex: 2 }}>
+            <FormLabel>Hora início</FormLabel>
+            <Button
+              onPress={() => {
+                TimePickerAndroid.open({
+                  hour: horaInicio.getHours(),
+                  minute: horaInicio.getMinutes(),
+                  is24Hour: true,
+                }).then(data => {
+                  const { action, minute, hour } = data
+                  if (action === TimePickerAndroid.timeSetAction) {
+                    dispatch(setHoraInicio(new Date(0, 0, 0, hour, minute)))
+                  }
+                })
+              }}
+              title={`${pad(horaInicio.getHours(), '00')}h${pad(horaInicio.getMinutes(), '00')}`}
+              small
+              buttonStyle={styles.buttonPicker}
+            />
+          </View>
+          <View style={{ flex: 2 }}>
+            <FormLabel>Hora fim</FormLabel>
+            <Button
+              onPress={() => {
+                TimePickerAndroid.open({
+                  hour: horaFim.getHours(),
+                  minute: horaFim.getMinutes(),
+                  is24Hour: true,
+                }).then(data => {
+                  const { action, minute, hour } = data
+                  if (action === TimePickerAndroid.timeSetAction) {
+                    dispatch(setHoraFim(new Date(0, 0, 0, hour, minute)))
+                  }
+                })
+              }}
+              title={`${pad(horaFim.getHours(), '00')}h${pad(horaFim.getMinutes(), '00')}`}
+              small
+              buttonStyle={styles.buttonPicker}
+            />
+          </View>
+        </View>
+        <FormLabel>Notificar antecipadamente em</FormLabel>
+        <View style={styles.pickerContainer}>
+          <Picker
+            style={styles.picker}
+            selectedValue={notifyPeriod}
+            onValueChange={value => dispatch(setNotifyPeriod(value))}
+            prompt="Selecione um período..."
+            itemStyle={{ backgroundColor: 'white' }}
+          >
+            <Picker.Item label="5 minutos" value="key0" />
+            <Picker.Item label="15 minutos" value="key1" />
+            <Picker.Item label="30 minutos" value="key2" />
+            <Picker.Item label="45 minutos" value="key3" />
+            <Picker.Item label="1 hora" value="key4" />
+            <Picker.Item label="2 horas" value="key5" />
+            <Picker.Item label="3 horas" value="key6" />
+          </Picker>
+        </View>
         <Button
           backgroundColor='#005bb1'
           title='CONTINUAR'
@@ -348,7 +471,7 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     borderBottomWidth: 1,
-    borderBottomColor: '#666',
+    borderBottomColor: '#ccc',
     borderStyle: 'solid',
     marginHorizontal: 20,
     marginBottom: 8,
@@ -356,9 +479,13 @@ const styles = StyleSheet.create({
   picker: {
     flex: 1,
     height: 30,
+    color: '#86939e',
   },
   pickerDisabled: {
     color: '#e2e2e2',
+  },
+  buttonPicker: {
+    marginTop: 5,
   },
 })
 
