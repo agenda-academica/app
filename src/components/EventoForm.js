@@ -19,10 +19,20 @@ import { RNS3 } from 'react-native-aws3'
 import md5 from 'md5'
 
 import { uploadImage } from '../actions/UploadAction'
-import { ReduxFormInput } from './'
+import {
+  ReduxFormInput,
+  UniversidadePicker,
+  UnidadePicker,
+  CursoPicker,
+  TurmaPicker,
+  DisciplinaPicker,
+} from '../components'
 import { API_URL } from '../constants/api'
 import { applicationJSON } from '../utilities/requestHelpers'
 import { pad } from '../utilities/stringHelpers'
+import { isEmptyObject } from '../utilities/validationHelpers'
+import { notifications } from '../constants/shared'
+import { dateFormat } from '../utilities/dateHelpers'
 import {
   requestUniversidadeCreate,
   successUniversidadeCreate,
@@ -32,8 +42,13 @@ import {
   successUniversidadeUpdate,
   failureUniversidadeUpdate,
 } from '../actions/UniversidadeActions'
+import { setShow as setShowSimpleColorPicker } from '../actions/SimpleColorPickerActions'
+import { initialPickerItem as initialUniversidadePickerItem } from '../reducers/UniversidadeReducer'
+import { initialPickerItem as initialUnidadePickerItem } from '../reducers/UnidadeReducer'
+import { initialPickerItem as initialCursoPickerItem } from '../reducers/CursoReducer'
+import { initialPickerItem as initialTurmaPickerItem } from '../reducers/TurmaReducer'
+import { initialPickerItem as initialDisciplinaPickerItem } from '../reducers/DisciplinaReducer'
 import {
-  attachToDisciplina,
   setUniversidade,
   setUnidade,
   setCurso,
@@ -45,80 +60,21 @@ import {
   setHoraInicio,
   setHoraFim,
   setNotifyPeriod,
+  eventoTypes,
 } from '../actions/EventoActions'
+import { save } from '../utilities/eventoHelpers'
 
 class EventoForm extends Component {
-  _save({ values, logo }) {
-    const { update } = this.props
-    if (!update) this._create({ values, logo })
-    else this._update({ values, logo })
-  }
-
-  _create({ values, logo }) {
-    const { dispatch, credentials, successRedirect } = this.props
-
-    const method = 'POST'
-    const headers = { ...applicationJSON, ...credentials }
-    const universidade = { ...values, logo }
-    const body = JSON.stringify({ universidade })
-
-    return fetch(`${API_URL}/universidades`, { method, headers, body })
-      .then(res => res.json().then(data => {
-        dispatch(uploadImage(undefined))
-        if (data.errors && data.errors.length)
-          dispatch(failureUniversidadeCreate(data.errors[0]))
-        else {
-          dispatch(successUniversidadeCreate(data))
-          successRedirect()
-        }
-      }))
-      .catch(error => dispatch(failureUniversidadeCreate(error)))
-  }
-
-  _update({ values, logo }) {
-    const { update, dispatch, credentials, successRedirect } = this.props
-
-    const method = 'PUT'
-    const headers = { ...applicationJSON, ...credentials }
-    const universidade = { ...values, logo }
-    const body = JSON.stringify({ universidade })
-
-    return fetch(`${API_URL}/universidades/${update.id}`, { method, headers, body })
-      .then(res => res.json().then(data => {
-        dispatch(uploadImage(undefined))
-        if (data.errors && data.errors.length)
-          dispatch(failureUniversidadeUpdate(data.errors[0]))
-        else {
-          dispatch(successUniversidadeUpdate(data))
-          successRedirect()
-        }
-      }))
-      .catch(error => dispatch(failureUniversidadeUpdate(error)))
-  }
-
   showPicker = async (ref, dispatch, options) => {
-    console.log('this.state', this.state)
-    console.log('this.props', this.props)
     try {
       const { action, year, month, day } = await DatePickerAndroid.open(options)
-      console.log('action, year, month, day', action, year, month, day)
-      console.log('ref', ref)
-      console.log('dispatch', dispatch)
-      if (!action === DatePickerAndroid.dismissedAction) {
-        var date = new Date(year, month, day);
+      if (action === DatePickerAndroid.dateSetAction) {
+        const date = new Date(year, month, day)
         if (ref === 'inicio') dispatch(setDataInicio(date))
         else if (ref === 'fim') dispatch(setDataFim(date))
       }
-      // if (action === DatePickerAndroid.dismissedAction) {
-      //   newState[stateKey + 'Text'] = 'dismissed';
-      // } else {
-      //   var date = new Date(year, month, day);
-      //   newState[stateKey + 'Text'] = date.toLocaleDateString();
-      //   newState[stateKey + 'Date'] = date;
-      // }
-      // this.setState(newState);
     } catch ({code, message}) {
-      console.warn(`Error in example '${stateKey}': `, message);
+      console.warn(`Error [EventoForm] '${ref}' button:`, message)
     }
   };
 
@@ -131,11 +87,15 @@ class EventoForm extends Component {
       touch,
       invalid,
       dispatch,
-      imageUpload,
       credentials,
-      successRedirect,
+      next,
+      simpleColorPicker: { selected: color },
+      universidade: { pickerSelected: universidadePickerSelected },
+      unidade: { pickerSelected: unidadePickerSelected },
+      curso: { pickerSelected: cursoPickerSelected },
+      turma: { pickerSelected: turmaPickerSelected },
+      disciplina: { pickerSelected: disciplinaPickerSelected },
       evento: {
-        attach,
         universidade,
         unidade,
         curso,
@@ -151,98 +111,72 @@ class EventoForm extends Component {
     } = this.props
     const { update } = this.props
 
-    const imageUploadUri = !!imageUpload && imageUpload.uri
-    const imagePlaceholder = 'https://placeholdit.imgix.net/~text?txtsize=33&txt=150%C3%97150'
-      + '&w=150&h=150'
+    let selectedUniversidade = initialUniversidadePickerItem
+    if (!isEmptyObject(update)) selectedUniversidade = update.universidade
 
-    console.log('this.state', this.state)
+    let selectedUnidade = initialUnidadePickerItem
+    if (!isEmptyObject(update)) selectedUnidade = update.unidade
+
+    let selectedCurso = initialCursoPickerItem
+    if (!isEmptyObject(update)) selectedCurso = update.curso
+
+    let selectedTurma = initialTurmaPickerItem
+    if (!isEmptyObject(update)) selectedTurma = update.turma
+
+    let selectedDisciplina = initialDisciplinaPickerItem
+    if (!isEmptyObject(update)) selectedDisciplina = update.disciplina
 
     return (
       <View style={styles.container}>
-        <FormLabel>Vincular a uma disciplina</FormLabel>
-        <Switch
-          onValueChange={value => dispatch(attachToDisciplina(value))}
-          style={{ marginBottom: 10, marginTop: -25 }}
-          value={attach}
+        <UniversidadePicker selected={selectedUniversidade} />
+        <UnidadePicker
+          selected={selectedUnidade}
+          disabled={!universidadePickerSelected || !universidadePickerSelected.id}
+          filter={
+            unidade => (
+              universidadePickerSelected instanceof Object &&
+              unidade.universidade.id === universidadePickerSelected.id
+            ) || !unidade.id
+          }
         />
-        {
-          !attach ? null : (
-            <View>
-              <FormLabel>Universidade</FormLabel>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  style={styles.picker}
-                  selectedValue={universidade}
-                  onValueChange={value => dispatch(setUniversidade(value))}
-                  enabled={true}
-                  prompt="Selecione uma universidade..."
-                >
-                  <Picker.Item label="hello" value="key1" />
-                  <Picker.Item label="world" value={{ id: 1, foo: 'bar' }} />
-                  <Picker.Item label="hello" value="key3" />
-                  <Picker.Item label="world" value="key4" />
-                </Picker>
-              </View>
-              <FormLabel>Unidade</FormLabel>
-              <View style={[styles.pickerContainer, !!universidade ? {} : styles.pickerContainerDisabled]}>
-                <Picker
-                  style={[styles.picker, !!universidade ? {} : styles.pickerDisabled]}
-                  selectedValue={unidade}
-                  onValueChange={value => dispatch(setUnidade(value))}
-                  enabled={!!universidade}
-                  prompt="Selecione uma unidade..."
-                >
-                  <Picker.Item label="hello" value="key0" />
-                  <Picker.Item label="world" value="key1" />
-                </Picker>
-              </View>
-              <FormLabel>Curso</FormLabel>
-              <View style={[styles.pickerContainer, !!unidade ? {} : styles.pickerContainerDisabled]}>
-                <Picker
-                  style={[styles.picker, !!unidade ? {} : styles.pickerDisabled]}
-                  selectedValue={curso}
-                  onValueChange={value => dispatch(setCurso(value))}
-                  enabled={!!unidade}
-                  prompt="Selecione um curso..."
-                >
-                  <Picker.Item label="hello" value="key0" />
-                  <Picker.Item label="world" value="key1" />
-                </Picker>
-              </View>
-              <FormLabel>Turma</FormLabel>
-              <View style={[styles.pickerContainer, !!curso ? {} : styles.pickerContainerDisabled]}>
-                <Picker
-                  style={[styles.picker, !!curso ? {} : styles.pickerDisabled]}
-                  selectedValue={turma}
-                  onValueChange={value => dispatch(setTurma(value))}
-                  enabled={!!curso}
-                  prompt="Selecione uma turma..."
-                >
-                  <Picker.Item label="hello" value="key0" />
-                  <Picker.Item label="world" value="key1" />
-                </Picker>
-              </View>
-              <FormLabel>Disciplina</FormLabel>
-              <View style={[styles.pickerContainer, !!turma ? {} : styles.pickerContainerDisabled]}>
-                <Picker
-                  style={[styles.picker, !!turma ? {} : styles.pickerDisabled]}
-                  selectedValue={disciplina}
-                  onValueChange={value => dispatch(setDisciplina(value))}
-                  enabled={!!turma}
-                  prompt="Selecione uma disciplina..."
-                >
-                  <Picker.Item label="hello" value="key0" />
-                  <Picker.Item label="world" value="key1" />
-                </Picker>
-              </View>
-            </View>
-          )
-        }
+        <CursoPicker
+          selected={selectedCurso}
+          disabled={!unidadePickerSelected || !unidadePickerSelected.id}
+          filter={
+            curso => (
+              unidadePickerSelected instanceof Object &&
+              curso instanceof Object && curso.unidade instanceof Object &&
+              curso.unidade.id === unidadePickerSelected.id
+            ) || !curso.id
+          }
+        />
+        <TurmaPicker
+          selected={selectedTurma}
+          disabled={!cursoPickerSelected || !cursoPickerSelected.id}
+          filter={
+            turma => (
+              cursoPickerSelected instanceof Object &&
+              turma instanceof Object && turma.curso instanceof Object &&
+              turma.curso.id === cursoPickerSelected.id
+            ) || !turma.id
+          }
+        />
+        <DisciplinaPicker
+          selected={selectedDisciplina}
+          disabled={!turmaPickerSelected || !turmaPickerSelected.id}
+          filter={
+            disciplina => (
+              turmaPickerSelected instanceof Object &&
+              disciplina instanceof Object && disciplina.turma instanceof Object &&
+              disciplina.turma.id === turmaPickerSelected.id
+            ) || !disciplina.id
+          }
+        />
         <FormLabel>Tipo de evento</FormLabel>
         <ButtonGroup
           onPress={value => dispatch(setType(value))}
           selectedIndex={eventoType}
-          buttons={['Prova', 'Trabalho', 'Outros']}
+          buttons={eventoTypes}
         />
         <FormLabel>Cor</FormLabel>
         <View
@@ -254,28 +188,11 @@ class EventoForm extends Component {
           }}
         >
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <FontAwesome
-              name="circle"
-              color="#ad5000"
-              style={{
-                fontSize: 30,
-              }}
-            />
+            <FontAwesome name="circle" color={color} style={{ fontSize: 30 }} />
           </View>
           <View style={{ flex: 9 }}>
             <Button
-              onPress={() => {
-                TimePickerAndroid.open({
-                  hour: horaInicio.getHours(),
-                  minute: horaInicio.getMinutes(),
-                  is24Hour: true,
-                }).then(data => {
-                  const { action, minute, hour } = data
-                  if (action === TimePickerAndroid.timeSetAction) {
-                    dispatch(setHoraInicio(new Date(0, 0, 0, hour, minute)))
-                  }
-                })
-              }}
+              onPress={() => dispatch(setShowSimpleColorPicker(true))}
               title="Selecionar cor..."
               small
               buttonStyle={styles.buttonPicker}
@@ -390,49 +307,36 @@ class EventoForm extends Component {
             prompt="Selecione um período..."
             itemStyle={{ backgroundColor: 'white' }}
           >
-            <Picker.Item label="5 minutos" value="key0" />
-            <Picker.Item label="15 minutos" value="key1" />
-            <Picker.Item label="30 minutos" value="key2" />
-            <Picker.Item label="45 minutos" value="key3" />
-            <Picker.Item label="1 hora" value="key4" />
-            <Picker.Item label="2 horas" value="key5" />
-            <Picker.Item label="3 horas" value="key6" />
+            {notifications.map(notify => (
+              <Picker.Item
+                key={`notify-at-${notify.value}`}
+                label={notify.label}
+                value={notify.value}
+              />
+            ))}
           </Picker>
         </View>
         <Button
           backgroundColor='#005bb1'
           title='CONTINUAR'
-          disabled={invalid}
+          disabled={invalid || (!disciplinaPickerSelected || !disciplinaPickerSelected.id)}
           buttonStyle={styles.submitButton}
-          onPress={handleSubmit(values => {
-            if (!imageUploadUri) {
-              // this._save({ values, logo: imageUploadUri })
-              console.log('[EventoForm]: dont update image')
-            }
-            else {
-              console.log('[EventoForm]: update image')
-              const imageExt = imageUploadUri.match(/\.(.*)$/)[1]
-              const file = {
-                uri: imageUpload.uri,
-                name: `${md5(new Date())}.${imageExt}`,
-                type: `image/${imageExt}`,
+          onPress={
+            handleSubmit(fields => {
+              const values = {
+                ...fields,
+                disciplina_id: disciplinaPickerSelected.id,
+                tipo: eventoTypes[eventoType],
+                cor: color,
+                data_inicio: dateFormat.yyyymmdd(dataInicio, '-'),
+                data_fim: dateFormat.yyyymmdd(dataFim, '-'),
+                hora_inicio: dateFormat.hhmm(horaInicio, ':'),
+                hora_fim: dateFormat.hhmm(horaFim, ':'),
+                notify_at: notifyPeriod,
               }
-              const options = {
-                keyPrefix: 'uploads/',
-                bucket: 'agenda-academica',
-                region: 'sa-east-1',
-                accessKey: 'AKIAJQ6LDL2L4TA5BJSA',
-                secretKey: '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',
-                successActionStatus: 201
-              }
-
-              dispatch(requestUniversidadeCreate())
-              return RNS3.put(file, options).then(resImage => {
-                if (resImage.status !== 201) throw new Error('Failed to upload image to S3')
-                this._save({ values, logo: resImage.body.postResponse.location })
-              })
-            }
-          })}
+              save({ values, ...this.props, next })
+            })
+          }
         />
       </View>
     )
@@ -443,31 +347,11 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: 50
   },
-  logoFieldContainer: {
-    flexDirection: 'row',
-    flex: 1,
-    height: 150,
-    marginHorizontal: 20,
-    marginTop: 10,
-  },
-  logoImage: {
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoRightContentContainer: {
-    flex: 2,
-    paddingLeft: 10,
-  },
-  logoDisclaimerText: {
-    color: '#ccc',
-    marginBottom: 10,
-  },
   submitButton: {
     marginTop: 15,
   },
-  pickerContainerDisabled: {
-    borderBottomColor: '#f2f2f2',
+  buttonPicker: {
+    marginTop: 5,
   },
   pickerContainer: {
     borderBottomWidth: 1,
@@ -481,25 +365,19 @@ const styles = StyleSheet.create({
     height: 30,
     color: '#86939e',
   },
-  pickerDisabled: {
-    color: '#e2e2e2',
-  },
-  buttonPicker: {
-    marginTop: 5,
-  },
 })
 
 EventoForm.propTypes = {
-  successRedirect: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
 }
 
 const validate = values => {
   const errors = {}
-  if (!values.nome)
-    errors.nome = ' - Obrigatório'
+  if (!values.titulo)
+    errors.titulo = ' - Obrigatório'
 
-  if (!values.abreviacao)
-    errors.abreviacao = ' - Obrigatório'
+  if (!values.descricao)
+    errors.descricao = ' - Obrigatório'
 
   return errors
 }
@@ -507,10 +385,15 @@ const validate = values => {
 EventoForm = reduxForm({ form: 'eventoForm', validate })(EventoForm)
 
 const mapStateToProps = state => ({
-  initialValues: state.universidades || { nome: null },
-  imageUpload: state.upload.image,
+  initialValues: state.universidades || {},
   credentials: state.authentication.credentials,
+  universidade: state.universidade,
+  unidade: state.unidade,
+  curso: state.curso,
+  turma: state.turma,
+  disciplina: state.disciplina,
   evento: state.evento,
+  simpleColorPicker: state.simpleColorPicker,
 })
 
 EventoForm = connect(mapStateToProps)(EventoForm)

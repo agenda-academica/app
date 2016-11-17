@@ -33,18 +33,20 @@ class TurmaPicker extends Component {
       turmaPickerSelected,
       filter,
       selected,
+      disabled,
     } = this.props
 
     const turmas = [initialPickerItem, ...list]
     return (
       <View>
         <FormLabel>Turma</FormLabel>
-        <View style={styles.pickerContainer}>
+        <View style={[styles.pickerContainer, disabled ? styles.pickerContainerDisabled : {}]}>
           <Picker
-            style={styles.picker}
+            style={[styles.picker, disabled ? styles.pickerDisabled : {}]}
             selectedValue={turmaPickerSelected}
             onValueChange={value => dispatch(setTurmaPickerSelected(value))}
             prompt="Selecione uma turma..."
+            enabled={!disabled}
           >
             {turmas.filter(filter).map(turma => (
               <Picker.Item

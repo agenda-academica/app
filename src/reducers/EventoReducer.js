@@ -1,5 +1,20 @@
 import {
-  EVENTO_ATTACH_TO_DISCIPLINA,
+  REQUEST_EVENTO_CREATE,
+  SUCCESS_EVENTO_CREATE,
+  FAILURE_EVENTO_CREATE,
+
+  REQUEST_EVENTO_FETCH,
+  SUCCESS_EVENTO_FETCH,
+  FAILURE_EVENTO_FETCH,
+
+  REQUEST_EVENTO_UPDATE,
+  SUCCESS_EVENTO_UPDATE,
+  FAILURE_EVENTO_UPDATE,
+
+  REQUEST_EVENTO_DESTROY,
+  SUCCESS_EVENTO_DESTROY,
+  FAILURE_EVENTO_DESTROY,
+
   EVENTO_SET_UNIVERSIDADE,
   EVENTO_SET_UNIDADE,
   EVENTO_SET_CURSO,
@@ -14,7 +29,9 @@ import {
 } from '../actions/EventoActions'
 
 const initialState = {
-  attach: false,
+  loading: false,
+  loaded: false,
+  list: [],
   eventoType: 0,
   dataInicio: new Date(),
   dataFim: new Date(),
@@ -25,8 +42,42 @@ const initialState = {
 
 export default EventoReducer = function(state = initialState, action) {
   switch(action.type) {
-    case EVENTO_ATTACH_TO_DISCIPLINA:
-      return { ...state, attach: action.attach }
+    case REQUEST_EVENTO_CREATE:
+      return { ...state, loading: true }
+    case SUCCESS_EVENTO_CREATE:
+      return { ...state, loading: false, list: [...state.list, action.evento] }
+    case FAILURE_EVENTO_CREATE:
+      return { ...state, loading: false, error: action.error }
+
+    case REQUEST_EVENTO_FETCH:
+      return { ...state, loading: true }
+    case SUCCESS_EVENTO_FETCH:
+      return { ...state, loading: false, loaded: true, list: action.eventos }
+    case FAILURE_EVENTO_FETCH:
+      return { ...state, loading: false, error: action.error }
+
+    case REQUEST_EVENTO_UPDATE:
+      return { ...state, loading: true }
+    case SUCCESS_EVENTO_UPDATE:
+      index = state.list.findIndex(item => item.id === action.evento.id)
+      list = [
+        ...state.list.slice(0, index),
+        action.evento,
+        ...state.list.slice(index + 1)
+      ]
+      return { ...state, loading: false, loaded: true, list }
+    case FAILURE_EVENTO_UPDATE:
+      return { ...state, loading: false, error: action.error }
+
+    case REQUEST_EVENTO_DESTROY:
+      return { ...state, loading: true }
+    case SUCCESS_EVENTO_DESTROY:
+      index = state.list.findIndex(item => item.id === action.evento.id)
+      list = [...state.list.slice(0, index), ...state.list.slice(index + 1)]
+      return { ...state, loading: false, list }
+    case FAILURE_EVENTO_DESTROY:
+      return { ...state, loading: false, error: action.error }
+
     case EVENTO_SET_UNIVERSIDADE:
       return { ...state, universidade: action.universidade }
     case EVENTO_SET_UNIDADE:

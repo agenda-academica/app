@@ -13,6 +13,7 @@ import {
   turma,
   disciplina,
   evento,
+  simpleColorPicker,
 } from '../reducers'
 
 const thunk = store => next => action => {
@@ -40,6 +41,7 @@ const store = createStoreWithNavigation(
     turma,
     disciplina,
     evento,
+    simpleColorPicker,
   }),
   applyMiddleware(thunk)
 )

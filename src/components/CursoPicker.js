@@ -33,18 +33,20 @@ class CursoPicker extends Component {
       cursoPickerSelected,
       filter,
       selected,
+      disabled,
     } = this.props
 
     const cursos = [initialPickerItem, ...list]
     return (
       <View>
         <FormLabel>Curso</FormLabel>
-        <View style={styles.pickerContainer}>
+        <View style={[styles.pickerContainer, disabled ? styles.pickerContainerDisabled : {}]}>
           <Picker
-            style={styles.picker}
+            style={[styles.picker, disabled ? styles.pickerDisabled : {}]}
             selectedValue={cursoPickerSelected}
             onValueChange={value => dispatch(setCursoPickerSelected(value))}
             prompt="Selecione uma curso..."
+            enabled={!disabled}
           >
             {cursos.filter(filter).map(curso => (
               <Picker.Item

@@ -1,16 +1,12 @@
 import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
-import ReactNative, {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Alert,
-} from 'react-native'
+import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Router from '../Router'
+import { FontAwesome } from '@exponent/vector-icons'
+import { Button } from 'react-native-elements'
 
-import { EventoForm, Loading } from '../components'
+import { EventoForm, Loading, SimpleColorPicker } from '../components'
 import { DestroyAlert } from '../components'
 import { API_URL } from '../constants/api'
 import { applicationJSON } from '../utilities/requestHelpers'
@@ -82,12 +78,13 @@ class EventoFormScreen extends Component {
           </View>
 
           <EventoForm
-            successRedirect={this._goBack}
+            next={this._goBack}
             update={params}
           />
           <KeyboardSpacer />
         </ScrollView>
         <Loading show={loading} />
+        <SimpleColorPicker />
       </View>
     );
   }

@@ -22,7 +22,8 @@ import {
 } from './screens'
 
 const Router = createRouter(() => ({
-  authentication: () => AuthenticationScreen,
+  authentication: () => EventoFormScreen,
+  // authentication: () => AuthenticationScreen,
   home: () => HomeScreen,
   user: () => AboutScreen,
   eventos: () => AboutScreen,

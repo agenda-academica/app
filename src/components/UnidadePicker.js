@@ -31,19 +31,21 @@ class UnidadePicker extends Component {
       loading,
       dispatch,
       unidadePickerSelected,
-      filter
+      filter,
+      disabled,
     } = this.props
 
     const unidades = [initialPickerItem, ...list]
     return (
       <View>
         <FormLabel>Unidade</FormLabel>
-        <View style={styles.pickerContainer}>
+        <View style={[styles.pickerContainer, disabled ? styles.pickerContainerDisabled : {}]}>
           <Picker
-            style={styles.picker}
+            style={[styles.picker, disabled ? styles.pickerDisabled : {}]}
             selectedValue={unidadePickerSelected}
             onValueChange={value => dispatch(setUnidadePickerSelected(value))}
             prompt="Selecione uma unidade..."
+            enabled={!disabled}
           >
             {unidades.filter(filter).map(unidade => (
               <Picker.Item
