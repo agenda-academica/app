@@ -14,6 +14,7 @@ import {
   disciplina,
   evento,
   simpleColorPicker,
+  calendario,
 } from '../reducers'
 
 const thunk = store => next => action => {
@@ -42,6 +43,7 @@ const store = createStoreWithNavigation(
     disciplina,
     evento,
     simpleColorPicker,
+    calendario,
   }),
   applyMiddleware(thunk)
 )

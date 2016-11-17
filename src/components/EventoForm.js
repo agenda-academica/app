@@ -225,12 +225,8 @@ class EventoForm extends Component {
                   }
                 })
               }}
-              title={
-                pad(dataInicio.getDate(), '00') +'/'+
-                pad(dataInicio.getMonth(), '00') +'/'+
-                dataInicio.getFullYear()
-              }
               small
+              title={dateFormat.ddmmyyyy(dataInicio, '/')}
               buttonStyle={styles.buttonPicker}
             />
           </View>
@@ -245,12 +241,8 @@ class EventoForm extends Component {
                   }
                 })
               }}
-              title={
-                pad(dataFim.getDate(), '00') +'/'+
-                pad(dataFim.getMonth(), '00') +'/'+
-                dataFim.getFullYear()
-              }
               small
+              title={dateFormat.ddmmyyyy(dataFim, '/')}
               buttonStyle={styles.buttonPicker}
             />
           </View>

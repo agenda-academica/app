@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react'
+import { connect } from 'react-redux'
 import {
   StyleSheet,
   View,
@@ -14,6 +15,10 @@ import ActionButton from 'react-native-action-button'
 import Router from '../Router'
 import mockEvents from './_mock-events'
 import { pad } from '../utilities/stringHelpers'
+import { setModalVisible, setSelectedDate } from '../actions/CalendarioActions'
+import { fetchEventos } from '../utilities/fetchHelpers'
+import { Loading } from '../components'
+import { dateFormat } from '../utilities/dateHelpers'
 
 class CalendarioScreen extends Component {
   static route = {
@@ -22,32 +27,35 @@ class CalendarioScreen extends Component {
     },
   }
 
-  state = {
-    modalVisible: false,
-    selectedDate: new Date(),
-  }
-
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
-
-  setSelectedDate(date) {
-    this.setState({ selectedDate: date })
-  }
-
   _goToScreen = name => () => {
     this.props.navigator.push(Router.getRoute(name));
   }
 
+  componentWillMount() {
+    const { evento: { loaded }, dispatch, credentials } = this.props
+    if (!loaded) fetchEventos({ dispatch, credentials })
+  }
+
   render() {
-    const date = new Date(this.state.selectedDate)
+    const {
+      dispatch,
+      calendario: { modalVisible, selectedDate },
+      evento: { loading, loaded, list: eventList }
+    } = this.props
+
+    const events = eventList.map(event => ({
+      date: event.data_inicio,
+      eventIndicator: { backgroundColor: event.cor },
+    }))
+    const eventDates = eventList.map(event => event.data_inicio)
+
     return (
       <View>
         <Modal
           animationType={"slide"}
           transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => this.setModalVisible(false)}
+          visible={modalVisible}
+          onRequestClose={() => dispatch(setModalVisible(false))}
         >
          <ScrollView style={{ paddingHorizontal: 20, backgroundColor: 'rgba(0,0,0,.6)' }}>
           <View style={{ paddingBottom: 20, paddingTop: 20, backgroundColor: 'white' }}>
@@ -72,19 +80,9 @@ class CalendarioScreen extends Component {
               </Text>
             </View>
             <View style={{ alignItems: 'center', marginBottom: 20 }}>
-              <MaterialIcons
-                name="event"
-                style={{
-                  fontSize: 80,
-                  color: '#333'
-                }}
-              />
+              <MaterialIcons name="event" style={{ fontSize: 80, color: '#333' }} />
               <Text style={{ marginTop: 5, fontSize: 20, color: '#333' }}>
-                {!date ? '' :
-                          pad(date.getDate(), '00')
-                  + '/' + pad(date.getMonth(), '00')
-                  + '/' + pad(date.getFullYear(), '0000')
-                }
+                {!selectedDate ? '' : dateFormat.ddmmyyyy(selectedDate, '/')}
               </Text>
             </View>
 
@@ -106,63 +104,34 @@ class CalendarioScreen extends Component {
                 marginBottom: 30
               }}
             >
-              <ListItem
-                title="Prova Intermediária"
-                subtitle="19h00 às 21h00, USJT, Butantã, SI, 4MSIN"
-                leftIcon={{ name: "circle", type: 'font-awesome', color: '#082106' }}
-                onPress={() => { console.log('Press ItemList') }}
-              />
-              <ListItem
-                title="Prova Intermediária"
-                subtitle="21h00 às 22h45, USJT, Mooca, CCOMP, 2MCPN"
-                leftIcon={{ name: "circle", type: 'font-awesome', color: '#0a450c' }}
-                onPress={() => { console.log('Press ItemList') }}
-              />
-              <ListItem
-                title="Prova Intermediária"
-                subtitle="21h00 às 22h45, USJT, Mooca, CCOMP, 2MCPN"
-                leftIcon={{ name: "circle", type: 'font-awesome', color: '#136400' }}
-                onPress={() => { console.log('Press ItemList') }}
-              />
-              <ListItem
-                title="Prova Intermediária"
-                subtitle="21h00 às 22h45, USJT, Mooca, CCOMP, 2MCPN"
-                leftIcon={{ name: "circle", type: 'font-awesome', color: '#239a00' }}
-                onPress={() => { console.log('Press ItemList') }}
-              />
-            </List>
-
-            <Text
-              style={{
-                fontSize: 20,
-                color: '#333',
-                marginLeft: 35,
-                marginBottom: -10,
-                marginTop: 15,
-              }}
-            >
-              Eventos recorrentes
-            </Text>
-            <List containerStyle={{ borderBottomColor: "#fff", borderTopColor: '#f0f0f0' }}>
-              <ListItem
-                title="Prova Intermediária"
-                subtitle="19h00 às 21h00, USJT, Butantã, SI, 4MSIN"
-                leftIcon={{ name: "circle", type: 'font-awesome', color: '#b71608' }}
-                onPress={() => { console.log('Press ItemList') }}
-              />
-              <ListItem
-                title="Prova Intermediária"
-                subtitle="21h00 às 22h45, USJT, Mooca, CCOMP, 2MCPN"
-                leftIcon={{ name: "circle", type: 'font-awesome', color: '#ad5000' }}
-                onPress={() => { console.log('Press ItemList') }}
-              />
+              {
+                eventList
+                  .filter(event => event.data_inicio === dateFormat.yyyymmdd(selectedDate, '-'))
+                  .map(event => (
+                    <ListItem
+                      key={`point-event-${event.id}`}
+                      title={event.titulo}
+                      subtitle={
+                        dateFormat.hhmm(new Date(event.hora_inicio), 'h')
+                        +' às '+ dateFormat.hhmm(new Date(event.hora_fim), 'h')
+                        +', '+ event.universidade.abreviacao
+                        +', '+ event.unidade.nome
+                        +', '+ event.curso.abreviacao
+                        +', '+ event.turma.nome
+                      }
+                      leftIcon={{ name: "circle", type: 'font-awesome', color: event.cor }}
+                      onPress={() => {
+                        dispatch(setModalVisible(false))
+                        this.props.navigator.push(Router.getRoute('eventoForm', event))
+                      }}
+                    />
+                  ))
+              }
             </List>
 
             <Button
               title="Fechar"
-              onPress={() => {
-                this.setModalVisible(!this.state.modalVisible)
-              }}
+              onPress={() => { dispatch(setModalVisible(!modalVisible)) }}
               backgroundColor="#005bb1"
               color="white"
               buttonStyle={{ marginTop: 50 }}
@@ -176,19 +145,18 @@ class CalendarioScreen extends Component {
           showControls={true}
           titleFormat={'MMMM YYYY'}
           dayHeadings={['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']}
-          monthNames={[
-            'Janeiro', 'Fevereiro', 'Março', 'Abril',
-            'Maio', 'Junho', 'Julho', 'Agosto',
-            'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-          ]}
+          monthNames={['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']}
           prevButtonText={'◀'}
           nextButtonText={'▶️'}
-          onDateSelect={date => {
-            this.setModalVisible(!this.state.modalVisible)
-            this.setSelectedDate(date)
+          onDateSelect={selected => {
+            const date = new Date(selected)
+            if (eventList.some(event => event.data_inicio === dateFormat.yyyymmdd(date, '-'))) {
+              dispatch(setModalVisible(!modalVisible))
+              dispatch(setSelectedDate(date))
+            }
           }}
-          eventDates={['2016-10-11', '2016-10-04', '2016-10-19']}
-          events={mockEvents}
+          eventDates={eventDates}
+          events={events}
           customStyle={{
             day: { fontSize: 15, textAlign: 'center', borderColor: '#fff' },
             calendarContainer: { backgroundColor: '#fff' },
@@ -211,6 +179,7 @@ class CalendarioScreen extends Component {
             <MaterialIcons name="add" style={styles.actionButtonIcon} />
           </ActionButton.Item>
         </ActionButton>
+        <Loading show={loading} />
       </View>
     )
   }
@@ -224,4 +193,10 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CalendarioScreen
+const mapStateToProps = state => ({
+  calendario: state.calendario,
+  evento: state.evento,
+  credentials: state.authentication.credentials,
+})
+
+export default connect(mapStateToProps)(CalendarioScreen)
