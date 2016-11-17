@@ -72,8 +72,8 @@ class EventosScreen extends Component {
     return (
       <View style={styles.container}>
         <SlidingTabNavigation
-          id="tab-navigation"
-          navigatorUID="tab-navigation"
+          id="events-tab-navigation"
+          navigatorUID="events-tab-navigation"
           initialTab={0}
           renderLabel={this._renderLabel}
           barBackgroundColor="#0084FF"
