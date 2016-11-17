@@ -1,3 +1,4 @@
+export { default as CardDescription } from './CardDescription'
 export { default as CardListItem } from './CardListItem'
 export { default as CardHeading } from './CardHeading'
 export { default as CardButton } from './CardButton'

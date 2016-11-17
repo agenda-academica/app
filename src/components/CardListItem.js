@@ -6,18 +6,19 @@ export default class CardListItem extends Component {
   static propTypes = {
     text: PropTypes.string.isRequired,
     iconName: PropTypes.string.isRequired,
+    iconColor: PropTypes.string,
     iconSize: PropTypes.number,
     fontSize: PropTypes.number,
   }
 
   render() {
-    const { text, iconName, iconSize, fontSize } = this.props
+    const { text, iconName, iconColor, iconSize, fontSize } = this.props
     const defaultIconSize = 18
 
     return (
       <View style={styles.container}>
         <MaterialIcons
-          style={styles.icon}
+          style={[styles.icon, iconColor ? { color: iconColor } : {}]}
           name={iconName}
           size={iconSize || defaultIconSize}
         />

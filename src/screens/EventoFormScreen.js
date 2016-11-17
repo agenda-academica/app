@@ -1,51 +1,28 @@
-import React, { PropTypes, Component } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import Router from '../Router'
-import { FontAwesome } from '@exponent/vector-icons'
-import { Button } from 'react-native-elements'
 
 import { EventoForm, Loading, SimpleColorPicker } from '../components'
 import { DestroyAlert } from '../components'
-import { API_URL } from '../constants/api'
-import { applicationJSON } from '../utilities/requestHelpers'
-import {
-  requestUniversidadeUpdate,
-  successUniversidadeUpdate,
-  failureUniversidadeUpdate,
-} from '../actions/UniversidadeActions'
-import * as Navigation from '../Navigation'
+import { isEmptyObject } from '../utilities/validationHelpers'
+import { destroy } from '../utilities/eventoHelpers'
 
 class EventoFormScreen extends Component {
   static route = {
     navigationBar: {
       title: 'Eventos',
-      renderRight: (route, props) =>
-        !props.params || !Object.keys(props.params).length ? <View></View> : (
+      backgroundColor: '#005bb1',
+      renderRight: ({ params }) =>
+        !isEmptyObject(params) && (
           <DestroyAlert
-            route={route}
-            props={props}
-            title="Excluir Universidade"
+            title="Excluir Turma"
             message={
-              'Tem certeza que deseja excluir esta universidade? Esta ação é permanente e, após'
-              + ' a confirmação, não será possível reverter. Ao excluir a universidade, todos os'
-              + ' dados de Unidades, Cursos, Turmas, Disciplinas e Eventos relacionados a esta'
-              + ' universidade, também serão excluídos. Deseja confirmar?'
+              'Tem certeza que deseja excluir este evento? Esta ação é permanente e, após'
+              + ' a confirmação, não será possível reverter. Deseja continuar?'
             }
-            yesOnPress={({ dispatch, credentials }) => {
-              const method = 'DELETE'
-              const headers = { ...applicationJSON, ...credentials }
-              dispatch(requestUniversidadeUpdate())
-              return fetch(`${API_URL}/universidades/${route.params.id}`, { method, headers })
-                .then(res => {
-                  res.json().then(data => {
-                    dispatch(successUniversidadeUpdate(data))
-                    Navigation.goHome()
-                  })
-                })
-                .catch(error => dispatch(failureUniversidadeUpdate(error)))
-            }}
+            entity={params}
+            yesOnPress={destroy}
           />
         ),
     },
@@ -54,7 +31,14 @@ class EventoFormScreen extends Component {
   _goBack = () => this.props.navigator.pop()
 
   render() {
-    const { loading } = this.props
+    const {
+      universidade: { loading: loadingUniversidade },
+      unidade: { loading: loadingUnidade },
+      curso: { loading: loadingCurso },
+      turma: { loading: loadingTurma },
+      disciplina: { loading: loadingDisciplina },
+      evento: { loading: loadingEvento },
+    } = this.props
     const { params } = this.props.route
 
     return (
@@ -83,7 +67,16 @@ class EventoFormScreen extends Component {
           />
           <KeyboardSpacer />
         </ScrollView>
-        <Loading show={loading} />
+        <Loading
+          show={
+            loadingUniversidade ||
+            loadingUnidade ||
+            loadingCurso ||
+            loadingTurma ||
+            loadingDisciplina ||
+            loadingEvento
+          }
+        />
         <SimpleColorPicker />
       </View>
     );
@@ -118,7 +111,12 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-  loading: state.universidade.loading,
+  universidade: state.universidade,
+  unidade: state.unidade,
+  curso: state.curso,
+  turma: state.turma,
+  disciplina: state.disciplina,
+  evento: state.evento,
 })
 
 export default connect(mapStateToProps)(EventoFormScreen)

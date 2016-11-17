@@ -19,10 +19,11 @@ import {
   RepresentanteCreateScreen,
   ShareMaterialCreateScreen,
   DisciplinasCreateScreen,
+  EventosScreen,
 } from './screens'
 
 const Router = createRouter(() => ({
-  authentication: () => EventoFormScreen,
+  authentication: () => EventosScreen,
   // authentication: () => AuthenticationScreen,
   home: () => HomeScreen,
   user: () => AboutScreen,
@@ -32,6 +33,7 @@ const Router = createRouter(() => ({
   unidades: () => UnidadesScreen,
   cursos: () => CursosScreen,
   turmas: () => TurmasScreen,
+  eventos: () => EventosScreen,
   representantes: () => RepresentanteCreateScreen,
   shareMaterial: () => ShareMaterialCreateScreen,
   sobre: () => AboutScreen,

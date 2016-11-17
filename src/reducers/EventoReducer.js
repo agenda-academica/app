@@ -27,6 +27,7 @@ import {
   EVENTO_SET_HORA_FIM,
   EVENTO_SET_NOTIFY_PERIOD,
 } from '../actions/EventoActions'
+import { notifications } from '../constants/shared'
 
 const initialState = {
   loading: false,
@@ -37,7 +38,7 @@ const initialState = {
   dataFim: new Date(),
   horaInicio: new Date(),
   horaFim: new Date(),
-  notifyPeriod: 0,
+  notifyPeriod: notifications[0].value,
 }
 
 export default EventoReducer = function(state = initialState, action) {

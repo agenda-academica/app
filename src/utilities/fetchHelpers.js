@@ -25,6 +25,11 @@ import {
   successDisciplinaFetch,
   failureDisciplinaFetch,
 } from '../actions/DisciplinaActions'
+import {
+  requestEventoFetch,
+  successEventoFetch,
+  failureEventoFetch,
+} from '../actions/EventoActions'
 
 export const mockCredentials = {
   'access-token': 'U0H6ZASH4UdMAT2IAzaGGA',
@@ -81,4 +86,13 @@ export const fetchDisciplinas = ({ dispatch, credentials }) => {
   fetch(`${API_URL}/disciplinas`, { method, headers })
     .then(res => res.json().then(data => dispatch(successDisciplinaFetch(data))))
     .catch(error => dispatch(failureDisciplinaFetch(error)))
+}
+
+export const fetchEventos = ({ dispatch, credentials }) => {
+  dispatch(requestEventoFetch())
+  const method = 'GET'
+  const headers = { ...applicationJSON, ...mockCredentials }
+  fetch(`${API_URL}/eventos`, { method, headers })
+    .then(res => res.json().then(data => dispatch(successEventoFetch(data))))
+    .catch(error => dispatch(failureEventoFetch(error)))
 }
