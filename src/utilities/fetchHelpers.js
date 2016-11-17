@@ -32,9 +32,9 @@ import {
 } from '../actions/EventoActions'
 
 export const mockCredentials = {
-  'access-token': 'U0H6ZASH4UdMAT2IAzaGGA',
-  'client': 'qYfD9ZgCJF4L-ysor6rWEQ',
-  'expiry': '1480454278',
+  'access-token': 'OW8yAjxbmy16nzubehcdfQ',
+  'client': '202aqDGwZDiKcYWrOfWpQw',
+  'expiry': '1480575006',
   'token-type': 'Bearer',
   'uid': 'gabrielrtakeda@gmail.com',
 }

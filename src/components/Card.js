@@ -71,7 +71,7 @@ Card.propTypes = {
   buttonIconName: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
   buttonOnPress: PropTypes.func.isRequired,
-  description: PropTypes.string.isRequired,
+  description: PropTypes.string,
 }
 
 export default Card

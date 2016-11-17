@@ -23,8 +23,8 @@ import {
 } from './screens'
 
 const Router = createRouter(() => ({
-  authentication: () => CalendarioScreen,
-  // authentication: () => AuthenticationScreen,
+  // authentication: () => HomeScreen,
+  authentication: () => AuthenticationScreen,
   home: () => HomeScreen,
   user: () => AboutScreen,
   eventos: () => AboutScreen,

@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Icon,
+  Dimensions,
 } from 'react-native'
 import {
   SlidingTabNavigation,
@@ -16,7 +17,7 @@ import { MaterialIcons } from '@exponent/vector-icons'
 import ActionButton from 'react-native-action-button'
 
 import Router from '../Router'
-import { Card, Loading } from '../components'
+import { Card, Loading, EmptyList } from '../components'
 import { fetchDisciplinas } from '../utilities/fetchHelpers'
 import { dateFormat } from '../utilities/dateHelpers'
 import placeholdit from '../constants/placeholdit'
@@ -53,7 +54,23 @@ class HomeScreen extends Component {
 
   _weekdayCards(weekday) {
     const { disciplina: { list } } = this.props
-    return list.filter(disciplina => disciplina.dia_semana === weekday).map(disciplina => (
+    const condition = disciplina => disciplina.dia_semana === weekday
+    return !list.some(condition) ? (
+      <View style={{
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height - 158,
+      }}>
+        <EmptyList
+          icon="wb-sunny"
+          message="Não há nenhuma aula agendada pra hoje (:"
+          buttonText="Para cadastrar, clique aqui"
+          buttonPress={this._goToScreen('disciplinasCreate')}
+        />
+      </View>
+    ) : list.filter(condition).map(disciplina => (
       <Card
         key={`disciplina-terca-${disciplina.id}`}
         image={{
@@ -69,7 +86,7 @@ class HomeScreen extends Component {
         turmaName={disciplina.turma.nome}
         disciplinaName={disciplina.nome}
         buttonIconName="remove-red-eye"
-        buttonText="VIEW NOW"
+        buttonText="VISUALIZAR"
         buttonOnPress={() => {
           this.props.navigator.push(Router.getRoute('disciplinasCreate', disciplina))
         }}
