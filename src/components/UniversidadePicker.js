@@ -31,18 +31,20 @@ class UniversidadePicker extends Component {
       loading,
       dispatch,
       universidadePickerSelected,
+      disabled,
     } = this.props
 
     const universidades = [initialPickerItem, ...list]
     return (
       <View>
         <FormLabel>Universidade</FormLabel>
-        <View style={styles.pickerContainer}>
+        <View style={[styles.pickerContainer, disabled ? styles.pickerContainerDisabled : {}]}>
           <Picker
-            style={styles.picker}
+            style={[styles.picker, disabled ? styles.pickerDisabled : {}]}
             selectedValue={universidadePickerSelected}
             onValueChange={value => dispatch(setUniversidadePickerSelected(value))}
             prompt="Selecione uma universidade..."
+            enabled={!disabled}
           >
             {universidades.map(universidade => (
               <Picker.Item
