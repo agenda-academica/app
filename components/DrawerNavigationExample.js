@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import {
   StyleSheet,
   View,
@@ -11,23 +12,27 @@ import {
   DrawerNavigationItem,
 } from '@exponent/ex-navigation';
 import { MaterialIcons } from '@exponent/vector-icons';
-import Router from '../src/Router';
 
-export default class DrawerNavigationExample extends Component {
+import Router from '../src/Router'
+import * as placeholdit from '../src/constants/placeholdit'
 
-  _renderHeader = () => (
-    <View style={styles.menuHeader}>
-      <Image
-        resizeMode="cover"
-        style={styles.menuHeaderBackground}
-        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/Steve_Jobs_Headshot_2010-CROP.jpg'}} />
-      <View style={styles.menuHeaderOverlay} />
+class DrawerNavigationExample extends Component {
+  _renderHeader = () => {
+    const { user } = this.props
+    return (
+      <View style={styles.menuHeader}>
+        <Image
+          resizeMode="cover"
+          style={styles.menuHeaderBackground}
+          source={{ uri: user.avatar || placeholdit.card(':)') }} />
+        <View style={styles.menuHeaderOverlay} />
 
-      <Text style={styles.menuHeaderText}>
-        Steve Jobs
-      </Text>
-    </View>
-  )
+        <Text style={styles.menuHeaderText}>
+          {user.first_name} {user.last_name}
+        </Text>
+      </View>
+    )
+  }
 
   _renderTitle = (text: string, isSelected: bool) => {
     return (
@@ -193,3 +198,9 @@ const styles = StyleSheet.create({
     tintColor: '#fff',
   }
 });
+
+const mapStateToProps = state => ({
+  user: state.authentication.user,
+})
+
+export default connect(mapStateToProps)(DrawerNavigationExample)
