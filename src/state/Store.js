@@ -28,7 +28,7 @@ const createStoreWithNavigation = createNavigationEnabledStore({
   navigationStateKey: 'navigation',
 })
 
-const store = createStoreWithNavigation(
+const store = createStore(
   combineReducers({
     navigation: NavigationReducer,
     form: formReducer,
