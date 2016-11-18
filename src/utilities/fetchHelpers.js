@@ -30,6 +30,11 @@ import {
   successEventoFetch,
   failureEventoFetch,
 } from '../actions/EventoActions'
+import {
+  requestShareMaterialFetch,
+  successShareMaterialFetch,
+  failureShareMaterialFetch,
+} from '../actions/ShareMaterialActions'
 
 export const mockCredentials = {
   'access-token': '7Vbay743LyNBCTRwGgkynA',
@@ -95,4 +100,13 @@ export const fetchEventos = ({ dispatch, credentials }) => {
   fetch(`${API_URL}/eventos`, { method, headers })
     .then(res => res.json().then(data => dispatch(successEventoFetch(data))))
     .catch(error => dispatch(failureEventoFetch(error)))
+}
+
+export const fetchShareMaterials = ({ dispatch, credentials }) => {
+  dispatch(requestShareMaterialFetch())
+  const method = 'GET'
+  const headers = { ...applicationJSON, ...mockCredentials }
+  fetch(`${API_URL}/materials`, { method, headers })
+    .then(res => res.json().then(data => dispatch(successShareMaterialFetch(data))))
+    .catch(error => dispatch(failureShareMaterialFetch(error)))
 }

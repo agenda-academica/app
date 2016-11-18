@@ -1,6 +1,7 @@
 export { default as CardDescription } from './CardDescription'
 export { default as CardListItem } from './CardListItem'
 export { default as CardHeading } from './CardHeading'
+export { default as CardDoubleButton } from './CardDoubleButton'
 export { default as CardButton } from './CardButton'
 export { default as Card } from './Card'
 export { default as FormLabel } from './FormLabel'

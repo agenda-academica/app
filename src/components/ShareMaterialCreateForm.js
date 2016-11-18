@@ -25,7 +25,7 @@ class ShareMaterialCreateForm extends Component {
       dispatch,
       universidade: { pickerSelected: universidadePickerSelected },
       turma: { pickerSelected: turmaPickerSelected },
-      shareMaterial: { list, selected: currentSelectedMaterial },
+      shareMaterial: { anexos, selected: currentSelectedMaterial },
     } = this.props
 
     const currentSelectedMaterialUri = !!currentSelectedMaterial && currentSelectedMaterial.uri
@@ -33,10 +33,10 @@ class ShareMaterialCreateForm extends Component {
     return (
       <View style={styles.container}>
         <View style={{ marginBottom: 50 }}>
-          <UniversidadePicker disabled={!!list.length} />
+          <UniversidadePicker disabled={!!anexos.length} />
           <TurmaPicker
             selected={initialTurmaPickerItem}
-            disabled={!universidadePickerSelected || !universidadePickerSelected.id || !!list.length}
+            disabled={!universidadePickerSelected || !universidadePickerSelected.id || !!anexos.length}
             filter={
               turma => (
                 universidadePickerSelected instanceof Object &&
@@ -95,7 +95,7 @@ class ShareMaterialCreateForm extends Component {
         <FormLabel labelStyle={{ marginBottom: 0 }}>
           Materiais adicionados
         </FormLabel>
-        {!list.length ? (
+        {!anexos.length ? (
           <View style={styles.emptyListContainer}>
             <MaterialIcons name="attach-file" style={styles.emptyListIcon} />
             <Text style={{ color: '#333', marginTop: 5, }}>
@@ -104,7 +104,7 @@ class ShareMaterialCreateForm extends Component {
           </View>
         ) : (
           <List containerStyle={styles.listContainerStyle}>
-            {list.map((material, index) => (
+            {anexos.map((material, index) => (
               <ListItem
                 key={`material-list-item-${index}`}
                 title={material.titulo}
@@ -119,14 +119,14 @@ class ShareMaterialCreateForm extends Component {
           backgroundColor='#005bb1'
           title='COMPARTILHAR'
           icon={{ name: 'share' }}
-          disabled={!list.length}
+          disabled={!anexos.length}
           buttonStyle={styles.submitButton}
           onPress={() => Alert.alert(
             'Confirmação',
             'Tudo pronto? Tem certeza que anexou todos os materiais que desejava?',
             [
               { text: 'Não' },
-              { text: 'Sim', onPress: () => save({ list, ...this.props }) }
+              { text: 'Sim', onPress: () => save({ anexos, ...this.props }) }
             ]
           )}
         />

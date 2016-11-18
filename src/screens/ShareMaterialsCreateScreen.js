@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react'
+import { connect } from 'react-redux'
 import ReactNative, {
   StyleSheet,
   Text,
@@ -7,9 +8,9 @@ import ReactNative, {
 } from 'react-native'
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-import { ShareMaterialCreateForm } from '../components'
+import { ShareMaterialCreateForm, Loading } from '../components'
 
-class ShareMaterialCreateScreen extends Component {
+class ShareMaterialsCreateScreen extends Component {
   static route = {
     navigationBar: {
       title: 'Materiais',
@@ -17,6 +18,7 @@ class ShareMaterialCreateScreen extends Component {
   }
 
   render() {
+    const { shareMaterial: { loading } } = this.props
     return (
       <ScrollView style={styles.container} ref="scrollView">
         <View style={styles.titleContainer}>
@@ -40,6 +42,7 @@ class ShareMaterialCreateScreen extends Component {
 
         <ShareMaterialCreateForm />
         <KeyboardSpacer />
+        <Loading show={loading} />
       </ScrollView>
     );
   }
@@ -65,4 +68,8 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ShareMaterialCreateScreen
+const mapStateToProps = state => ({
+  shareMaterial: state.shareMaterial,
+})
+
+export default connect(mapStateToProps)(ShareMaterialsCreateScreen)
