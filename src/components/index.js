@@ -22,6 +22,7 @@ export { default as TurmasCreateForm } from './TurmasCreateForm'
 export { default as DisciplinasCreateForm } from './DisciplinasCreateForm'
 export { default as RepresentantesCreateForm } from './RepresentantesCreateForm'
 export { default as ShareMaterialCreateForm } from './ShareMaterialCreateForm'
+export { default as TurmaRepresentantesForm } from './TurmaRepresentantesForm'
 
 export { default as UniversidadePicker } from './UniversidadePicker'
 export { default as UnidadePicker } from './UnidadePicker'

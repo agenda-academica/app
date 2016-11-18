@@ -18,6 +18,7 @@ import ActionButton from 'react-native-action-button'
 import Router from '../Router'
 import { Card, EmptyList, Loading } from '../components'
 import { fetchTurmas } from '../utilities/fetchHelpers'
+import { setUpdate } from '../actions/TurmaActions'
 
 class TurmasScreen extends Component {
   static route = {
@@ -36,7 +37,7 @@ class TurmasScreen extends Component {
   }
 
   render() {
-    const { turma: { loading, list } } = this.props
+    const { dispatch, turma: { loading, list } } = this.props
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -62,6 +63,9 @@ class TurmasScreen extends Component {
                   `https://placeholdit.imgix.net/~text?txtsize=180&txt=${turma.universidade.abreviacao.toUpperCase()}&w=640&h=300&txttrack=0`
               }}
               imageStyle={{}}
+              listItem={turma.representantes.map(representante => ({
+                icon: 'person', text: `${representante.nome} ${representante.sobrenome}`,
+              }))}
               universidadeName={turma.universidade.nome}
               unidadeName={turma.unidade.nome}
               cursoName={turma.curso.nome}
@@ -69,7 +73,8 @@ class TurmasScreen extends Component {
               buttonIconName="edit"
               buttonText="EDITAR"
               buttonOnPress={() => {
-                this.props.navigator.push(Router.getRoute('turmasCreate', turma))
+                dispatch(setUpdate(turma))
+                this.props.navigator.push(Router.getRoute('turmasCreate'), turma)
               }}
             />
           ))}

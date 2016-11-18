@@ -2,9 +2,14 @@ import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import { FormLabel, Button, CheckBox } from 'react-native-elements'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Text} from 'react-native'
 
-import { ReduxFormInput, UniversidadePicker, UnidadePicker, CursoPicker } from '../components'
+import {
+  ReduxFormInput,
+  UniversidadePicker,
+  UnidadePicker,
+  CursoPicker
+} from '../components'
 import { isEmptyObject } from '../utilities/validationHelpers'
 import { initialPickerItem as initialUniversidadePickerItem } from '../reducers/UniversidadeReducer'
 import { initialPickerItem as initialUnidadePickerItem } from '../reducers/UnidadeReducer'
@@ -25,6 +30,8 @@ class TurmasCreateForm extends Component {
       universidade: { pickerSelected: universidadePickerSelected },
       unidade: { pickerSelected: unidadePickerSelected },
       curso: { pickerSelected: cursoPickerSelected },
+      turma: { representantes },
+      children,
     } = this.props
 
     let selectedUniversidade = initialUniversidadePickerItem
@@ -41,6 +48,7 @@ class TurmasCreateForm extends Component {
         <UniversidadePicker selected={selectedUniversidade} />
         <UnidadePicker
           selected={selectedUnidade}
+          disabled={!universidadePickerSelected || !universidadePickerSelected.id}
           filter={
             unidade => (
               universidadePickerSelected instanceof Object &&
@@ -50,6 +58,7 @@ class TurmasCreateForm extends Component {
         />
         <CursoPicker
           selected={selectedCurso}
+          disabled={!unidadePickerSelected || !unidadePickerSelected.id}
           filter={
             curso => (
               unidadePickerSelected instanceof Object &&
@@ -67,14 +76,6 @@ class TurmasCreateForm extends Component {
         />
         <Field
           {...this.props}
-          keyboardType="email-address"
-          name="email"
-          component={ReduxFormInput}
-          label="Email*"
-          placeholder="Ex: 4msin.usjt@gmail.com"
-        />
-        <Field
-          {...this.props}
           name="site"
           component={ReduxFormInput}
           label="Site"
@@ -87,14 +88,16 @@ class TurmasCreateForm extends Component {
           label="Outas Informações"
           placeholder="Ex: Opcional"
         />
+
+        {React.cloneElement(children, {...{ ...this.props, update }})}
+
         <Button
           backgroundColor='#005bb1'
-          title='CONTINUAR'
-          disabled={invalid}
-          buttonStyle={styles.submitButton}
+          title='SALVAR'
+          disabled={invalid || !representantes.length}
           onPress={
             handleSubmit(fields => {
-              const values = { ...fields, curso_id: cursoPickerSelected.id }
+              const values = { ...fields, representantes, curso_id: cursoPickerSelected.id }
               save({ values, ...this.props, next })
             })
           }
@@ -107,9 +110,6 @@ class TurmasCreateForm extends Component {
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 50
-  },
-  submitButton: {
-    marginTop: 15,
   },
 })
 
@@ -130,6 +130,7 @@ const mapStateToProps = state => ({
   universidade: state.universidade,
   unidade: state.unidade,
   curso: state.curso,
+  turma: state.turma,
 })
 
 TurmasCreateForm = connect(mapStateToProps)(TurmasCreateForm)

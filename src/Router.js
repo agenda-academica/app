@@ -24,7 +24,7 @@ import {
 } from './screens'
 
 const Router = createRouter(() => ({
-  authentication: () => ShareMaterialCreateScreen,
+  authentication: () => TurmasScreen,
   // authentication: () => AuthenticationScreen,
   home: () => HomeScreen,
   user: () => AboutScreen,

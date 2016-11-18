@@ -16,6 +16,11 @@ import {
   FAILURE_TURMA_DESTROY,
 
   TURMA_PICKER_SET_SELECTED,
+  TURMA_SET_UPDATE,
+
+  TURMA_PUSH_REPRESENTANTE,
+  TURMA_POP_REPRESENTANTE,
+  TURMA_SET_REPRESENTANTES,
 } from '../actions/TurmaActions'
 
 export const initialPickerItem = { id: 0, nome: '----------', curso: {} }
@@ -25,11 +30,14 @@ const initialState = {
   loaded: false,
   list: [],
   pickerSelected: initialPickerItem,
+  representantes: [],
+  update: {},
 }
 
 export default TurmaReducer = function(state = initialState, action) {
   let index
   let list
+  let representantes
   switch (action.type) {
 
     case REQUEST_TURMA_CREATE:
@@ -70,6 +78,20 @@ export default TurmaReducer = function(state = initialState, action) {
 
     case TURMA_PICKER_SET_SELECTED:
       return { ...state, pickerSelected: action.selected }
+    case TURMA_SET_UPDATE:
+      return { ...state, update: action.update }
+
+    case TURMA_PUSH_REPRESENTANTE:
+      return { ...state, representantes: [...state.representantes, action.representante] }
+    case TURMA_POP_REPRESENTANTE:
+      index = state.representantes.findIndex(item => item === action.representante)
+      representantes = [
+        ...state.representantes.slice(0, index),
+        ...state.representantes.slice(index + 1),
+      ]
+      return { ...state, representantes }
+    case TURMA_SET_REPRESENTANTES:
+      return { ...state, representantes: action.representantes }
 
     default:
       return state

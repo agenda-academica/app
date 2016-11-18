@@ -28,3 +28,12 @@ export const failureTurmaDestroy = error => ({ type: FAILURE_TURMA_DESTROY, erro
 
 export const TURMA_PICKER_SET_SELECTED = 'TURMA_PICKER_SET_SELECTED'
 export const setTurmaPickerSelected = selected => ({ type: TURMA_PICKER_SET_SELECTED, selected })
+export const TURMA_SET_UPDATE = 'TURMA_SET_UPDATE'
+export const setUpdate = update => ({ type: TURMA_SET_UPDATE, update })
+
+export const TURMA_PUSH_REPRESENTANTE = 'TURMA_PUSH_REPRESENTANTE'
+export const pushRepresentante = representante => ({ type: TURMA_PUSH_REPRESENTANTE, representante })
+export const TURMA_POP_REPRESENTANTE = 'TURMA_POP_REPRESENTANTE'
+export const popRepresentante = representante => ({ type: TURMA_POP_REPRESENTANTE, representante })
+export const TURMA_SET_REPRESENTANTES = 'TURMA_SET_REPRESENTANTES'
+export const setRepresentantes = representantes => ({ type: TURMA_SET_REPRESENTANTES, representantes })

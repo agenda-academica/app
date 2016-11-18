@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-import { TurmasCreateForm, Loading, DestroyAlert } from '../components'
+import { TurmasCreateForm, Loading, DestroyAlert, TurmaRepresentantesForm } from '../components'
 import { isEmptyObject } from '../utilities/validationHelpers'
 import { destroy } from '../utilities/turmaHelpers'
 
@@ -38,30 +38,43 @@ class TurmasCreateScreen extends Component {
       universidade: { loading: loadingUniversidade },
       unidade: { loading: loadingUnidade },
       curso: { loading: loadingCurso },
-      turma: { loading },
+      turma: { loading, update },
     } = this.props
-    const { params } = this.props.route
+
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
               {
-                isEmptyObject(params) ?
+                isEmptyObject(update) ?
                 'Cadastrar turma' :
                 'Editar turma'
               }
             </Text>
             <Text style={styles.subtitle}>
               {
-                isEmptyObject(params) ?
+                isEmptyObject(update) ?
                 'Informe no formulário abaixo, os dados da turma a ser cadastrada.' :
                 'Informe no formulário abaixo, os dados da turma que deseja editar.'
               }
             </Text>
           </View>
 
-          <TurmasCreateForm update={params} next={this._goBack} />
+          <TurmasCreateForm update={update} next={this._goBack}>
+            <View>
+              <View style={[styles.titleContainer, { marginTop: 40 }]}>
+                <Text style={styles.title}>
+                  Representantes
+                </Text>
+                <Text style={styles.subtitle}>
+                  Informe no formulário abaixo os representantes de classe da turma que
+                  deseja cadastrar.
+                </Text>
+              </View>
+              <TurmaRepresentantesForm />
+            </View>
+          </TurmasCreateForm>
           <KeyboardSpacer />
         </ScrollView>
         <Loading show={loadingUniversidade || loadingUnidade || loadingCurso || loading} />
