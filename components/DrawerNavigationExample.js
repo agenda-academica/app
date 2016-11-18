@@ -139,7 +139,7 @@ class DrawerNavigationExample extends Component {
           id: 'share',
           title: 'Compartilhar Material',
           icon: 'share',
-          route: 'shareMaterial'
+          route: 'shareMaterials'
         })}
         {this._renderNavigationItem({
           id: 'sobre',

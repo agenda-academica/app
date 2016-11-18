@@ -17,14 +17,15 @@ import {
   SignupFormScreen,
   EventoFormScreen,
   RepresentanteCreateScreen,
-  ShareMaterialCreateScreen,
+  ShareMaterialsCreateScreen,
   DisciplinasCreateScreen,
   EventosScreen,
   MyAccountFormScreen,
+  ShareMaterialsScreen,
 } from './screens'
 
 const Router = createRouter(() => ({
-  authentication: () => TurmasScreen,
+  authentication: () => ShareMaterialsScreen,
   // authentication: () => AuthenticationScreen,
   home: () => HomeScreen,
   user: () => AboutScreen,
@@ -36,7 +37,7 @@ const Router = createRouter(() => ({
   turmas: () => TurmasScreen,
   eventos: () => EventosScreen,
   representantes: () => RepresentanteCreateScreen,
-  shareMaterial: () => ShareMaterialCreateScreen,
+  shareMaterials: () => ShareMaterialsScreen,
   sobre: () => AboutScreen,
 
   loginForm: () => LoginFormScreen,
@@ -50,6 +51,7 @@ const Router = createRouter(() => ({
   cursosCreate: () => CursosCreateScreen,
   turmasCreate: () => TurmasCreateScreen,
   disciplinasCreate: () => DisciplinasCreateScreen,
+  shareMaterialsCreate: () => ShareMaterialsCreateScreen,
 
   about: () => AboutScreen,
 }))
