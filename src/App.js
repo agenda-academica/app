@@ -53,9 +53,7 @@ class App extends Component {
     if (!this.state.bootstrapped) return <Components.AppLoading />
     return (
       <Provider store={Store}>
-        <NavigationProvider context={navigationContext}>
-          <AgendaAcademica />
-        </NavigationProvider>
+        <AgendaAcademica />
       </Provider>
     );
   }
