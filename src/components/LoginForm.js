@@ -61,23 +61,26 @@ class LoginForm extends Component {
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(values),
-              }).then(res => {
-                const body = JSON.parse(res._bodyText)
-                if (body.errors && body.errors.length)
-                  dispatch(failureLoginAuthentication(body.errors[0]))
-                else {
-                  const { headers: { map } } = res
-                  const credentials = {
-                    'client': map['client'],
-                    'access-token': map['access-token'],
-                    'token-type': map['token-type'],
-                    'expiry': map['expiry'],
-                    'uid': map['uid'],
+              }).then(response => {
+                response.json().then(data => {
+                  console.log('data', data)
+                  if (data.errors && data.errors.length)
+                    dispatch(failureLoginAuthentication(data.errors[0]))
+                  else {
+                    const { headers: { map: header } } = response
+                    const credentials = {
+                      'client': header['client'],
+                      'access-token': header['access-token'],
+                      'token-type': header['token-type'],
+                      'expiry': header['expiry'],
+                      'uid': header['uid'],
+                    }
+                    const { data: user } = data
+                    dispatch(successLoginAuthentication({ credentials, user }))
+                    registerForPushNotificationsAsync(credentials)
+                    successRedirect()
                   }
-                  dispatch(successLoginAuthentication(credentials))
-                  registerForPushNotificationsAsync(credentials)
-                  successRedirect()
-                }
+                })
               }).catch(error => dispatch(failureLoginAuthentication(error)))
             })
           }

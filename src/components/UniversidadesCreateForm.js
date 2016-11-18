@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 import Exponent from 'exponent'
-import { Field, reduxForm, formValueSelector } from 'redux-form'
+import { Field, reduxForm } from 'redux-form'
 import { FormLabel, FormInput, Button } from 'react-native-elements'
 import ReactNative, {
   StyleSheet,
@@ -16,6 +16,7 @@ import md5 from 'md5'
 import { uploadImage } from '../actions/UploadAction'
 import { ReduxFormInput } from './'
 import { API_URL } from '../constants/api'
+import * as placeholdit from '../constants/placeholdit'
 import { applicationJSON } from '../utilities/requestHelpers'
 import { isEmptyObject } from '../utilities/validationHelpers'
 import {
@@ -93,8 +94,7 @@ class UniversidadesCreateForm extends Component {
     const { update } = this.props
 
     const imageUploadUri = !!imageUpload && imageUpload.uri
-    const imagePlaceholder = 'https://placeholdit.imgix.net/~text?txtsize=33&txt=150%C3%97150'
-      + '&w=150&h=150'
+    const imagePlaceholder = placeholdit.size({ width: 150, height: 150 })
 
     return (
       <View style={styles.container}>
