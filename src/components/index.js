@@ -13,6 +13,7 @@ export { default as EmptyList } from './EmptyList'
 export { default as LoginForm } from './LoginForm'
 export { default as SignupForm } from './SignupForm'
 export { default as EventoForm } from './EventoForm'
+export { default as MyAccountForm } from './MyAccountForm'
 
 export { default as UniversidadesCreateForm } from './UniversidadesCreateForm'
 export { default as UnidadesCreateForm } from './UnidadesCreateForm'

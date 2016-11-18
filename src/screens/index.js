@@ -16,3 +16,4 @@ export { default as RepresentanteCreateScreen } from './RepresentanteCreateScree
 export { default as ShareMaterialCreateScreen } from './ShareMaterialCreateScreen'
 export { default as DisciplinasCreateScreen } from './DisciplinasCreateScreen'
 export { default as EventosScreen } from './EventosScreen'
+export { default as MyAccountFormScreen } from './MyAccountFormScreen'

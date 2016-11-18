@@ -28,8 +28,6 @@ class SignupForm extends Component {
       successRedirect,
     } = this.props
 
-    console.log('submitErrors', submitErrors)
-
     return (
       <ScrollView style={styles.container}>
         <Field
@@ -120,7 +118,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const validate = (values, a, b, c) => {
+const validate = values => {
   const errors = {}
 
   if (!values.first_name)

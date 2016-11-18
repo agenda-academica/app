@@ -24,13 +24,11 @@ class ReduxFormInput extends Component {
 
     return (
       <View>
-        <FormLabel
-          {...{
-            labelStyle: touched && !!error ? { color: 'red' } : {}
-          }}
-        >
-          {`${label}${touched && !!error ? error : ''}`}
-        </FormLabel>
+        {!!label && (
+          <FormLabel {...{ labelStyle: touched && !!error ? { color: 'red' } : {} }}>
+            {`${label}${touched && !!error ? error : ''}`}
+          </FormLabel>
+        )}
         <FormInput
           {...rest}
           keyboardType={keyboardType || 'default'}

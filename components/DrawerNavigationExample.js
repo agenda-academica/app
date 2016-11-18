@@ -19,12 +19,14 @@ import * as placeholdit from '../src/constants/placeholdit'
 class DrawerNavigationExample extends Component {
   _renderHeader = () => {
     const { user } = this.props
+    console.log('user', user)
     return (
       <View style={styles.menuHeader}>
         <Image
           resizeMode="cover"
           style={styles.menuHeaderBackground}
-          source={{ uri: user.avatar || placeholdit.card(':)') }} />
+          source={{ uri: user.avatar || placeholdit.card(':)') }}
+        />
         <View style={styles.menuHeaderOverlay} />
 
         <Text style={styles.menuHeaderText}>
@@ -89,7 +91,7 @@ class DrawerNavigationExample extends Component {
           id: 'user',
           title: 'Minha Conta',
           icon: 'account-circle',
-          route: 'user'
+          route: 'myAccountForm'
         })}
         {this._renderNavigationItem({
           id: 'home',
