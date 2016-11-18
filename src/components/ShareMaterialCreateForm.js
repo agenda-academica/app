@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Exponent from 'exponent'
 import { Field, reduxForm } from 'redux-form'
 import { FormLabel, Button, CheckBox, List, ListItem } from 'react-native-elements'
-import { StyleSheet, View, Picker, Text, Image } from 'react-native'
+import { StyleSheet, View, Picker, Text, Image, Alert } from 'react-native'
 import { MaterialIcons } from '@exponent/vector-icons'
 
 import { ReduxFormInput, UniversidadePicker, TurmaPicker } from '../components'
@@ -11,6 +11,7 @@ import { isEmptyObject } from '../utilities/validationHelpers'
 import { initialPickerItem as initialTurmaPickerItem } from '../reducers/TurmaReducer'
 import { pushMaterial, popMaterial, setSelected } from '../actions/ShareMaterialActions'
 import * as placeholdit from '../constants/placeholdit'
+import { save } from '../utilities/shareMaterialHelpers'
 
 class ShareMaterialCreateForm extends Component {
   render() {
@@ -84,14 +85,7 @@ class ShareMaterialCreateForm extends Component {
               <Image
                 resizeMode="cover"
                 source={{ uri: currentSelectedMaterialUri || placeholdit.card('😎') }}
-                style={{
-                  flex: 1,
-                  height: 100,
-                  marginHorizontal: 15,
-                  marginTop: 10,
-                  borderWidth: 1,
-                  borderColor: 'rgba(0,0,0,.1)',
-                }}
+                style={styles.preview}
               />
               <Image source={{ uri: currentSelectedMaterialUri }} />
             </View>
@@ -102,40 +96,14 @@ class ShareMaterialCreateForm extends Component {
           Materiais adicionados
         </FormLabel>
         {!list.length ? (
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              paddingVertical: 10,
-              marginHorizontal: 20,
-              marginVertical: 15,
-              borderWidth: 1,
-              borderColor: '#ccc',
-              borderStyle: 'solid',
-              borderLeftWidth: 0,
-              borderRightWidth: 0,
-            }}
-          >
-            <MaterialIcons
-              name="attach-file"
-              style={{
-                color: '#666',
-                fontSize: 50,
-              }}
-            />
+          <View style={styles.emptyListContainer}>
+            <MaterialIcons name="attach-file" style={styles.emptyListIcon} />
             <Text style={{ color: '#333', marginTop: 5, }}>
-              Lista de materiais vazia.
+              A lista de materiais está vazia.
             </Text>
           </View>
         ) : (
-          <List
-            containerStyle={{
-              borderBottomColor: "#fff",
-              borderTopColor: '#f0f0f0',
-              marginBottom: 10,
-              marginTop: 10,
-            }}
-          >
+          <List containerStyle={styles.listContainerStyle}>
             {list.map((material, index) => (
               <ListItem
                 key={`material-list-item-${index}`}
@@ -150,15 +118,17 @@ class ShareMaterialCreateForm extends Component {
         <Button
           backgroundColor='#005bb1'
           title='COMPARTILHAR'
-          disabled={invalid}
+          icon={{ name: 'share' }}
+          disabled={!list.length}
           buttonStyle={styles.submitButton}
-          onPress={
-            handleSubmit((values, dispatch, props) => {
-              console.log("handling submit")
-              console.log(values)
-              console.log(props)
-            })
-          }
+          onPress={() => Alert.alert(
+            'Confirmação',
+            'Tudo pronto? Tem certeza que anexou todos os materiais que desejava?',
+            [
+              { text: 'Não' },
+              { text: 'Sim', onPress: () => save({ list, ...this.props }) }
+            ]
+          )}
         />
       </View>
     )
@@ -189,6 +159,36 @@ const styles = StyleSheet.create({
   },
   pickerDisabled: {
     color: '#e2e2e2',
+  },
+  preview: {
+    flex: 1,
+    height: 100,
+    marginHorizontal: 15,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,.1)',
+  },
+  emptyListContainer: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginHorizontal: 20,
+    marginVertical: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderStyle: 'solid',
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+  },
+  emptyListIcon: {
+    color: '#666',
+    fontSize: 50,
+  },
+  listContainerStyle: {
+    borderBottomColor: "#fff",
+    borderTopColor: '#f0f0f0',
+    marginBottom: 10,
+    marginTop: 10,
   },
 })
 
