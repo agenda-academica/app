@@ -1,8 +1,5 @@
 export const SHARE_MATERIAL_PUSH_MATERIAL = 'SHARE_MATERIAL_PUSH_MATERIAL'
-export const pushMaterial = material => {
-  console.log('push material', material)
-  return { type: SHARE_MATERIAL_PUSH_MATERIAL, material }
-}
+export const pushMaterial = material => ({ type: SHARE_MATERIAL_PUSH_MATERIAL, material })
 export const SHARE_MATERIAL_POP_MATERIAL = 'SHARE_MATERIAL_POP_MATERIAL'
 export const popMaterial = material => ({ type: SHARE_MATERIAL_POP_MATERIAL, material })
 

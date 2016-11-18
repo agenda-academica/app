@@ -17,7 +17,6 @@ export default ShareMaterialReducer = function(state = initialState, action) {
 
   switch(action.type) {
     case SHARE_MATERIAL_PUSH_MATERIAL:
-      console.log('action.material', action.material)
       return { ...state, list: [...state.list, action.material] }
     case SHARE_MATERIAL_POP_MATERIAL:
       index = state.list.findIndex(item => item === action.material)
