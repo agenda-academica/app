@@ -136,6 +136,12 @@ class DrawerNavigationExample extends Component {
           route: 'turmas'
         })}
         {this._renderNavigationItem({
+          id: 'share',
+          title: 'Compartilhar Material',
+          icon: 'share',
+          route: 'shareMaterial'
+        })}
+        {this._renderNavigationItem({
           id: 'sobre',
           title: 'Sobre',
           icon: 'info-outline',
