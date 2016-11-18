@@ -6,6 +6,7 @@ import {
   CardListItem,
   CardHeading,
   CardButton,
+  CardDoubleButton,
   CardDescription,
 } from '../components'
 
@@ -27,6 +28,9 @@ class Card extends Component {
       buttonOnPress,
       description,
       listItem,
+      doubleButton,
+      buttonLeft,
+      buttonRight,
     } = this.props
 
     return (
@@ -43,7 +47,8 @@ class Card extends Component {
           {!!cursoName && <CardListItem iconName="school" text={cursoName} />}
           {!!turmaName && <CardListItem iconName="insert-emoticon" text={turmaName} />}
           {!!disciplinaName && <CardListItem iconName="brush" text={disciplinaName} />}
-          <CardButton iconName={buttonIconName} title={buttonText} onPress={buttonOnPress} />
+          {!doubleButton && <CardButton iconName={buttonIconName} title={buttonText} onPress={buttonOnPress} />}
+          {!!doubleButton && <CardDoubleButton {...{ buttonLeft, buttonRight }} />}
         </CardReactNativeElements>
       </View>
     )
@@ -57,10 +62,13 @@ const styles = StyleSheet.create({
 })
 
 Card.propTypes = {
+  image: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  buttonIconName: PropTypes.string,
+  buttonText: PropTypes.string,
+  buttonOnPress: PropTypes.func,
   imageStyle: PropTypes.object,
   title: PropTypes.string,
   subtitle: PropTypes.string,
-  image: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   universidadeName: PropTypes.string,
   unidadeName: PropTypes.string,
   cursoName: PropTypes.string,
@@ -68,10 +76,10 @@ Card.propTypes = {
   disciplinaName: PropTypes.string,
   listItem: PropTypes.array,
   disciplinaHour: PropTypes.string,
-  buttonIconName: PropTypes.string.isRequired,
-  buttonText: PropTypes.string.isRequired,
-  buttonOnPress: PropTypes.func.isRequired,
   description: PropTypes.string,
+  doubleButton: PropTypes.bool,
+  buttonLeft: PropTypes.object,
+  buttonRight: PropTypes.object,
 }
 
 export default Card
