@@ -35,7 +35,6 @@ class MyAccountForm extends Component {
       dirty,
       next,
       authentication: {
-        credentials,
         showPasswordField,
         user: { loading, avatar },
       },
@@ -283,6 +282,7 @@ const mapStateToProps = state => ({
   initialValues: state.authentication.user,
   authentication: state.authentication,
   imageUpload: state.upload.image,
+  credentials: state.authentication.credentials,
 })
 
 MyAccountForm = connect(mapStateToProps)(MyAccountForm)

@@ -61,7 +61,7 @@ const _create = props => {
   const { material, dispatch, credentials, next } = props
 
   const method = 'POST'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   const body = JSON.stringify({ material })
 
   console.log('body', body)
@@ -80,7 +80,7 @@ const _update = ({ material, props }) => {
   const { update, dispatch, credentials, next } = props
 
   const method = 'PUT'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   const body = JSON.stringify({ material })
 
   dispatch(requestShareMaterialUpdate())
@@ -95,7 +95,7 @@ const _update = ({ material, props }) => {
 
 export const destroy = ({ dispatch, credentials, entity, next }) => {
   const method = 'DELETE'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
 
   dispatch(requestShareMaterialDestroy())
   return fetch(`${API_URL}/materials/${entity.id}`, { method, headers })

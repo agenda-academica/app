@@ -55,7 +55,7 @@ const update = ({ values, props }) => {
 
   console.log('update values', values)
   const method = 'PUT'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   const body = JSON.stringify({ ...values })
 
   console.log('method', method)
@@ -74,7 +74,7 @@ const update = ({ values, props }) => {
 
 export const destroy = ({ dispatch, credentials, entity, next }) => {
   const method = 'DELETE'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
 
   dispatch(requestMyAccountDestroy())
   return fetch(`${API_URL}/users/${entity.id}`, { method, headers })

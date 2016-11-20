@@ -26,7 +26,7 @@ const _create = ({ values, props }) => {
   const { dispatch, credentials, next } = props
 
   const method = 'POST'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   const evento = { ...values }
   const body = JSON.stringify({ evento })
 
@@ -44,7 +44,7 @@ const _update = ({ values, props }) => {
   const { update, dispatch, credentials, next } = props
 
   const method = 'PUT'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   const evento = { ...values }
   const body = JSON.stringify({ evento })
 
@@ -60,7 +60,7 @@ const _update = ({ values, props }) => {
 
 export const destroy = ({ dispatch, credentials, entity, next }) => {
   const method = 'DELETE'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
 
   dispatch(requestEventoDestroy())
   return fetch(`${API_URL}/eventos/${entity.id}`, { method, headers })

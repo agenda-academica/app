@@ -209,6 +209,7 @@ const mapStateToProps = state => ({
   universidade: state.universidade,
   turma: state.turma,
   shareMaterial: state.shareMaterial,
+  credentials: state.authentication.credentials,
 })
 
 ShareMaterialCreateForm = connect(mapStateToProps)(ShareMaterialCreateForm)

@@ -37,11 +37,11 @@ import {
 } from '../actions/ShareMaterialActions'
 
 export const mockCredentials = {
-  'access-token': '7Vbay743LyNBCTRwGgkynA',
-  'client': 'f7HncVkb6nkQdXdzSBX59Q',
-  'expiry': '1480660915',
+  'access-token': 'd_9ma7a9PPqkVtnNgfPWIw',
+  'client': 'qp6oupRgr5oJlnVIBo_T-w',
+  'expiry': '1480889099',
   'token-type': 'Bearer',
-  'uid': 'gabrielrtakeda@gmail.com',
+  'uid': 'foo@bar.com',
 }
 
 export const fetchUniversidades = async ({ dispatch, credentials, callback }) => {
@@ -49,7 +49,7 @@ export const fetchUniversidades = async ({ dispatch, credentials, callback }) =>
   const cb = callback || emptyCallback
   dispatch(requestUniversidadeFetch())
   const method = 'GET'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   fetch(`${API_URL}/universidades`, { method, headers })
     .then(res => res.json().then(data => { dispatch(successUniversidadeFetch(data)); cb(data) }))
     .catch(error => dispatch(failureUniversidadeFetch(error)))
@@ -60,7 +60,7 @@ export const fetchUnidades = ({ dispatch, credentials, callback }) => {
   const cb = callback || emptyCallback
   dispatch(requestUnidadeFetch())
   const method = 'GET'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   fetch(`${API_URL}/unidades`, { method, headers })
     .then(res => res.json().then(data => { dispatch(successUnidadeFetch(data)); cb(data) }))
     .catch(error => dispatch(failureUnidadeFetch(error)))
@@ -69,7 +69,7 @@ export const fetchUnidades = ({ dispatch, credentials, callback }) => {
 export const fetchCursos = ({ dispatch, credentials }) => {
   dispatch(requestCursoFetch())
   const method = 'GET'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   fetch(`${API_URL}/cursos`, { method, headers })
     .then(res => res.json().then(data => dispatch(successCursoFetch(data))))
     .catch(error => dispatch(failureCursoFetch(error)))
@@ -78,7 +78,7 @@ export const fetchCursos = ({ dispatch, credentials }) => {
 export const fetchTurmas = ({ dispatch, credentials }) => {
   dispatch(requestTurmaFetch())
   const method = 'GET'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   fetch(`${API_URL}/turmas`, { method, headers })
     .then(res => res.json().then(data => dispatch(successTurmaFetch(data))))
     .catch(error => dispatch(failureTurmaFetch(error)))
@@ -87,7 +87,7 @@ export const fetchTurmas = ({ dispatch, credentials }) => {
 export const fetchDisciplinas = ({ dispatch, credentials }) => {
   dispatch(requestDisciplinaFetch())
   const method = 'GET'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   fetch(`${API_URL}/disciplinas`, { method, headers })
     .then(res => res.json().then(data => dispatch(successDisciplinaFetch(data))))
     .catch(error => dispatch(failureDisciplinaFetch(error)))
@@ -96,7 +96,7 @@ export const fetchDisciplinas = ({ dispatch, credentials }) => {
 export const fetchEventos = ({ dispatch, credentials }) => {
   dispatch(requestEventoFetch())
   const method = 'GET'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   fetch(`${API_URL}/eventos`, { method, headers })
     .then(res => res.json().then(data => dispatch(successEventoFetch(data))))
     .catch(error => dispatch(failureEventoFetch(error)))
@@ -105,7 +105,7 @@ export const fetchEventos = ({ dispatch, credentials }) => {
 export const fetchShareMaterials = ({ dispatch, credentials }) => {
   dispatch(requestShareMaterialFetch())
   const method = 'GET'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   fetch(`${API_URL}/materials`, { method, headers })
     .then(res => res.json().then(data => dispatch(successShareMaterialFetch(data))))
     .catch(error => dispatch(failureShareMaterialFetch(error)))

@@ -131,6 +131,7 @@ const mapStateToProps = state => ({
   unidade: state.unidade,
   curso: state.curso,
   turma: state.turma,
+  credentials: state.authentication.credentials,
 })
 
 TurmasCreateForm = connect(mapStateToProps)(TurmasCreateForm)

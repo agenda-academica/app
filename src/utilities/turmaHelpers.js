@@ -28,7 +28,7 @@ const _create = ({ values, props }) => {
   const { dispatch, credentials, next } = props
 
   const method = 'POST'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   const turma = { ...values }
   const body = JSON.stringify({ turma })
 
@@ -46,7 +46,7 @@ const _update = ({ values, props }) => {
   const { update, dispatch, credentials, next } = props
 
   const method = 'PUT'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
   const turma = { ...values }
   const body = JSON.stringify({ turma })
 
@@ -62,7 +62,7 @@ const _update = ({ values, props }) => {
 
 export const destroy = ({ dispatch, credentials, entity, next }) => {
   const method = 'DELETE'
-  const headers = { ...applicationJSON, ...mockCredentials }
+  const headers = { ...applicationJSON, ...credentials }
 
   dispatch(requestTurmaDestroy())
   return fetch(`${API_URL}/turmas/${entity.id}`, { method, headers })
