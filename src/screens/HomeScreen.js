@@ -20,7 +20,7 @@ import Router from '../Router'
 import { Card, Loading, EmptyList } from '../components'
 import { fetchDisciplinas } from '../utilities/fetchHelpers'
 import { dateFormat } from '../utilities/dateHelpers'
-import placeholdit from '../constants/placeholdit'
+import * as placeholdit from '../constants/placeholdit'
 
 class HomeScreen extends Component {
   static route = {
