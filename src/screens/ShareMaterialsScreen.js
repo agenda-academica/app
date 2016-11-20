@@ -49,10 +49,10 @@ class ShareMaterialsScreen extends Component {
           </View>
           {!list.length ? (
             <EmptyList
-              icon="insert-emoticon"
-              message="Não há nenhuma turma cadastrada"
+              icon="attach-file"
+              message="Você não compartilhou nenhum material ainda"
               buttonText="Comece cadastrando por aqui"
-              buttonPress={this._goToScreen('turmasCreate')}
+              buttonPress={this._goToScreen('shareMaterialsCreate')}
             />
           ) : list.map(material => (
             <Card
@@ -93,7 +93,7 @@ class ShareMaterialsScreen extends Component {
           <ActionButton.Item
             buttonColor='#9b59b6'
             title="Compartilhar novo material"
-            onPress={this._goToScreen('turmasCreate')}
+            onPress={this._goToScreen('shareMaterialsCreate')}
           >
             <MaterialIcons name="add" style={styles.actionButtonIcon} />
           </ActionButton.Item>
