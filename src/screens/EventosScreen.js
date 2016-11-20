@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Icon } from 'react-native'
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Icon, Dimensions } from 'react-native'
 import { SlidingTabNavigation, SlidingTabNavigationItem } from '@exponent/ex-navigation'
 import { MaterialIcons } from '@exponent/vector-icons'
 import ActionButton from 'react-native-action-button'
 
 import Router from '../Router'
-import { Card, Loading } from '../components'
+import { Card, Loading, EmptyList } from '../components'
 import { fetchEventos } from '../utilities/fetchHelpers'
 import { dateFormat } from '../utilities/dateHelpers'
-import placeholdit from '../constants/placeholdit'
+import * as placeholdit from '../constants/placeholdit'
 
 class EventosScreen extends Component {
   static route = {
@@ -37,9 +37,8 @@ class EventosScreen extends Component {
     this.props.navigator.push(Router.getRoute(name));
   }
 
-  _card(type) {
-    const { evento: { list } } = this.props
-    return list.filter(evento => evento.tipo === type).map(evento => (
+  _card(list) {
+    return list.map(evento => (
       <Card
         key={`evento-${evento.id}`}
         image={{
@@ -69,6 +68,11 @@ class EventosScreen extends Component {
   render() {
     const { evento: { loading, list, loaded } } = this.props
     if (!loaded || loading) return <Loading show={true} />
+
+    const provas = list.filter(evento => evento.tipo === 'Prova')
+    const trabalhos = list.filter(evento => evento.tipo === 'Trabalho')
+    const outros = list.filter(evento => evento.tipo === 'Outros')
+
     return (
       <View style={styles.container}>
         <SlidingTabNavigation
@@ -80,19 +84,52 @@ class EventosScreen extends Component {
           indicatorStyle={styles.tabIndicator}
         >
           <SlidingTabNavigationItem id="0">
-            <ScrollView>{this._card('Prova')}</ScrollView>
+            {!provas.length ? (
+              <View style={styles.emptyListContainer}>
+                <EmptyList
+                  icon="security"
+                  message="Não há nenhuma prova agendada ainda"
+                  buttonText="Comece cadastrando por aqui"
+                  buttonPress={this._goToScreen('eventoForm')}
+                />
+              </View>
+            ) : (
+              <ScrollView>{this._card(provas)}</ScrollView>
+            )}
           </SlidingTabNavigationItem>
 
           <SlidingTabNavigationItem id="1">
-            <ScrollView>{this._card('Trabalho')}</ScrollView>
+            {!trabalhos.length ? (
+              <View style={styles.emptyListContainer}>
+                <EmptyList
+                  icon="work"
+                  message="Não há nenhum trabalho agendado ainda"
+                  buttonText="Comece cadastrando por aqui"
+                  buttonPress={this._goToScreen('eventoForm')}
+                />
+              </View>
+            ) : (
+              <ScrollView>{this._card(trabalhos)}</ScrollView>
+            )}
           </SlidingTabNavigationItem>
 
           <SlidingTabNavigationItem id="2">
-            <ScrollView>{this._card('Outros')}</ScrollView>
+            {!outros.length ? (
+              <View style={styles.emptyListContainer}>
+                <EmptyList
+                  icon="assistant"
+                  message="Não há nenhum outro tipo de evento agendado ainda"
+                  buttonText="Comece cadastrando por aqui"
+                  buttonPress={this._goToScreen('eventoForm')}
+                />
+              </View>
+            ) : (
+              <ScrollView>{this._card(outros)}</ScrollView>
+            )}
           </SlidingTabNavigationItem>
         </SlidingTabNavigation>
 
-        <ActionButton buttonColor="rgba(231,76,60,1)">
+        <ActionButton buttonColor="rgb(231,76,60)">
           <ActionButton.Item
             buttonColor='#9b59b6'
             title="Criar evento"
@@ -107,35 +144,32 @@ class EventosScreen extends Component {
   }
 }
 
+const { width: windowWidth, height: windowHeight } = Dimensions.get('window')
+
 const styles = StyleSheet.create({
   actionButtonIcon: {
     fontSize: 20,
     height: 22,
     color: 'white',
   },
-
   container: {
     flex: 1,
     backgroundColor: '#fafafa',
   },
-
   tabLabel: {
     margin: 8,
     fontSize: 13,
     color: '#fff',
   },
-
   tabIndicator: {
     backgroundColor: '#FFEB3B',
   },
-
   quoteContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
-
   quoteMarks: {
     alignSelf: 'flex-start',
     color: '#E91E63',
@@ -144,7 +178,6 @@ const styles = StyleSheet.create({
     bottom: -42,
     marginTop: -64,
   },
-
   quoteText: {
     color: '#222',
     fontSize: 18,
@@ -152,15 +185,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 8,
   },
-
   quoteAuthor: {
     color: '#888',
     fontSize: 12,
     fontStyle: 'italic',
   },
-
   selectedTab: {
     backgroundColor: '#0084FF',
+  },
+  emptyListContainer: {
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    width: windowWidth,
+    height: windowHeight - 178,
   },
 })
 
