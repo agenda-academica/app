@@ -8,7 +8,7 @@ import ReactNative, {
 } from 'react-native'
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-import { ShareMaterialCreateForm, Loading } from '../components'
+import { ShareMaterialCreateForm, Loading, ShareMaterialAttachmentsForm } from '../components'
 
 class ShareMaterialsCreateScreen extends Component {
   static route = {
@@ -40,7 +40,14 @@ class ShareMaterialsCreateScreen extends Component {
           </Text>
         </View>
 
-        <ShareMaterialCreateForm />
+        <ShareMaterialCreateForm>
+          <View style={{ marginTop: 10 }}>
+            <Text style={styles.title}>
+              Anexos
+            </Text>
+            <ShareMaterialAttachmentsForm />
+          </View>
+        </ShareMaterialCreateForm>
         <KeyboardSpacer />
         <Loading show={loading} />
       </ScrollView>
