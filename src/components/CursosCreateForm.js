@@ -38,6 +38,7 @@ class CursosCreateForm extends Component {
         <UniversidadePicker selected={selectedUniversidade} />
         <UnidadePicker
           selected={selectedUnidade}
+          disabled={!universidadePickerSelected || !universidadePickerSelected.id}
           filter={
             unidade => (
               universidadePickerSelected instanceof Object &&
