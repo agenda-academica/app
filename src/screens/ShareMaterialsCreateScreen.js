@@ -17,46 +17,53 @@ class ShareMaterialsCreateScreen extends Component {
     },
   }
 
+  _goBack = () => this.props.navigator.pop()
+
   render() {
     const { shareMaterial: { loading } } = this.props
     return (
-      <ScrollView style={styles.container} ref="scrollView">
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            Compartilhar Material
-          </Text>
-          <Text style={styles.subtitle}>
-            Informe no formulário abaixo, os dados do material a ser compartilhado. Se houver
-            mais de um material a ser compartilhado, utilize o mesmo botão para adicionar mais
-            materiais.
-          </Text>
-          <Text style={styles.subtitle}>
-            Os materiais adicionados podem ser visualizados em forma de lista, logo abaixo deste
-            texto. Se quiser remover algum item, é só clicar no ícone de "-".
-          </Text>
-          <Text style={styles.subtitle}>
-            Os representantes da turma selecionada receberão um email com o link do material
-            compartilhado.
-          </Text>
-        </View>
-
-        <ShareMaterialCreateForm>
-          <View style={{ marginTop: 10 }}>
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollView} ref="scrollView">
+          <View style={styles.titleContainer}>
             <Text style={styles.title}>
-              Anexos
+              Compartilhar Material
             </Text>
-            <ShareMaterialAttachmentsForm />
+            <Text style={styles.subtitle}>
+              Informe no formulário abaixo, os dados do material a ser compartilhado. Se houver
+              mais de um material a ser compartilhado, utilize o mesmo botão para adicionar mais
+              materiais.
+            </Text>
+            <Text style={styles.subtitle}>
+              Os materiais adicionados podem ser visualizados em forma de lista, logo abaixo deste
+              texto. Se quiser remover algum item, é só clicar no ícone de "-".
+            </Text>
+            <Text style={styles.subtitle}>
+              Os representantes da turma selecionada receberão um email com o link do material
+              compartilhado.
+            </Text>
           </View>
-        </ShareMaterialCreateForm>
-        <KeyboardSpacer />
+
+          <ShareMaterialCreateForm next={this._goBack}>
+            <View style={{ marginTop: 10 }}>
+              <Text style={styles.title}>
+                Anexos
+              </Text>
+              <ShareMaterialAttachmentsForm />
+            </View>
+          </ShareMaterialCreateForm>
+          <KeyboardSpacer />
+        </ScrollView>
         <Loading show={loading} />
-      </ScrollView>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollView: {
     padding: 20,
     backgroundColor: '#ffffff',
   },

@@ -14,6 +14,7 @@ class ShareMaterialCreateForm extends Component {
       handleSubmit,
       invalid,
       children,
+      next,
       universidade: { pickerSelected: universidadePickerSelected },
       turma: { pickerSelected: turmaPickerSelected },
       shareMaterial: { anexos },
@@ -61,6 +62,10 @@ class ShareMaterialCreateForm extends Component {
       </View>
     )
   }
+}
+
+ShareMaterialCreateForm.propTypes = {
+  next: PropTypes.func.isRequired,
 }
 
 const styles = StyleSheet.create({
