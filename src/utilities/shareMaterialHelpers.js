@@ -42,7 +42,7 @@ export const save = props => {
     const file = {
       uri: material.file,
       name: `${md5(newId())}.${ext}`,
-      type: `image/${ext}`
+      type: 'application/octet-stream'
     }
     return RNS3.put(file, options)
   })
