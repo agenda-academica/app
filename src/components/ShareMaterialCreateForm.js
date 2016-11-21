@@ -11,6 +11,7 @@ import { save } from '../utilities/shareMaterialHelpers'
 class ShareMaterialCreateForm extends Component {
   render() {
     const {
+      handleSubmit,
       invalid,
       children,
       universidade: { pickerSelected: universidadePickerSelected },
@@ -53,7 +54,7 @@ class ShareMaterialCreateForm extends Component {
             'Tudo pronto? Tem certeza que anexou todos os materiais que desejava?',
             [
               { text: 'Não' },
-              { text: 'Sim', onPress: () => save({ anexos, ...this.props }) }
+              { text: 'Sim', onPress: handleSubmit(values => save({ values, anexos, ...this.props })) }
             ]
           )}
         />
@@ -88,6 +89,7 @@ const mapStateToProps = state => ({
   universidade: state.universidade,
   turma: state.turma,
   shareMaterial: state.shareMaterial,
+  credentials: state.authentication.credentials,
 })
 
 ShareMaterialCreateForm = connect(mapStateToProps)(ShareMaterialCreateForm)

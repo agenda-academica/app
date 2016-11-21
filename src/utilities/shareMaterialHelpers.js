@@ -27,7 +27,7 @@ import { mockCredentials } from '../utilities/fetchHelpers'
 import { isEmptyObject } from '../utilities/validationHelpers'
 
 export const save = props => {
-  const { anexos, turma: { pickerSelected } } = props
+  const { values, anexos, turma: { pickerSelected } } = props
 
   const options = {
     keyPrefix: 'uploads/',
@@ -52,7 +52,8 @@ export const save = props => {
       response.forEach((image, index) => {
         anexos[index]['material_url'] = image.body.postResponse.location
       })
-      _create({ material: { turma_id: pickerSelected.id, anexos }, ...props })
+      const material = { turma_id: pickerSelected.id, anexos, ...values }
+      _create({ material, ...props })
     })
     .catch(error => Alert.alert('Ops! Ocorreu um erro.', JSON.stringify(error)))
 }
