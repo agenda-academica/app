@@ -55,6 +55,7 @@ class DisciplinasCreateForm extends Component {
         <UniversidadePicker selected={selectedUniversidade} />
         <UnidadePicker
           selected={selectedUnidade}
+          disabled={!universidadePickerSelected || !universidadePickerSelected.id}
           filter={
             unidade => (
               universidadePickerSelected instanceof Object &&
@@ -64,6 +65,7 @@ class DisciplinasCreateForm extends Component {
         />
         <CursoPicker
           selected={selectedCurso}
+          disabled={!unidadePickerSelected || !unidadePickerSelected.id}
           filter={
             curso => (
               unidadePickerSelected instanceof Object &&
@@ -74,6 +76,7 @@ class DisciplinasCreateForm extends Component {
         />
         <TurmaPicker
           selected={selectedTurma}
+          disabled={!cursoPickerSelected || !cursoPickerSelected.id}
           filter={
             turma => (
               cursoPickerSelected instanceof Object &&
