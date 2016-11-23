@@ -32,7 +32,6 @@ class CursoPicker extends Component {
       dispatch,
       cursoPickerSelected,
       filter,
-      selected,
       disabled,
     } = this.props
 

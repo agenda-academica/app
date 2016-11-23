@@ -28,3 +28,5 @@ export const failureCursoDestroy = error => ({ type: FAILURE_CURSO_DESTROY, erro
 
 export const CURSO_PICKER_SET_SELECTED = 'CURSO_PICKER_SET_SELECTED'
 export const setCursoPickerSelected = selected => ({ type: CURSO_PICKER_SET_SELECTED, selected })
+export const CURSO_SET_UPDATE = 'CURSO_SET_UPDATE'
+export const setUpdate = update => ({ type: CURSO_SET_UPDATE, update })

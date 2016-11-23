@@ -18,6 +18,7 @@ import ActionButton from 'react-native-action-button'
 import Router from '../Router'
 import { Card, EmptyList, Loading } from '../components'
 import { fetchCursos } from '../utilities/fetchHelpers'
+import { setUpdate } from '../actions/CursoActions'
 
 class CursosScreen extends Component {
   static route = {
@@ -36,7 +37,7 @@ class CursosScreen extends Component {
   }
 
   render() {
-    const { curso: { loading, list } } = this.props
+    const { dispatch, curso: { loading, list } } = this.props
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -68,7 +69,8 @@ class CursosScreen extends Component {
               buttonIconName="edit"
               buttonText="EDITAR"
               buttonOnPress={() => {
-                this.props.navigator.push(Router.getRoute('cursosCreate', curso))
+                dispatch(setUpdate(curso))
+                this.props.navigator.push(Router.getRoute('cursosCreate'))
               }}
             />
           ))}

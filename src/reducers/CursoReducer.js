@@ -17,6 +17,7 @@ import {
   FAILURE_CURSO_DESTROY,
 
   CURSO_PICKER_SET_SELECTED,
+  CURSO_SET_UPDATE,
 } from '../actions/CursoActions'
 
 export const initialPickerItem = { id: 0, nome: '----------', unidade: {} }
@@ -26,6 +27,7 @@ const initialState = {
   loaded: false,
   list: [],
   pickerSelected: initialPickerItem,
+  update: {},
 }
 
 export default CursoReducer = function(state = initialState, action) {
@@ -71,6 +73,8 @@ export default CursoReducer = function(state = initialState, action) {
 
     case CURSO_PICKER_SET_SELECTED:
       return { ...state, pickerSelected: action.selected }
+    case CURSO_SET_UPDATE:
+      return { ...state, update: action.update }
 
     default:
       return state

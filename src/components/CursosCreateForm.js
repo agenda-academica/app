@@ -21,10 +21,10 @@ class CursosCreateForm extends Component {
       invalid,
       dispatch,
       next,
-      update,
       credentials,
       universidade: { pickerSelected: universidadePickerSelected },
       unidade: { pickerSelected: unidadePickerSelected },
+      curso: { update },
     } = this.props
 
     let selectedUniversidade = initialUniversidadePickerItem
@@ -107,8 +107,10 @@ const validate = values => {
 CursosCreateForm = reduxForm({ form: 'cursosCreateForm', validate })(CursosCreateForm)
 
 const mapStateToProps = state => ({
+  initialValues: state.curso.update,
   universidade: state.universidade,
   unidade: state.unidade,
+  curso: state.curso,
   credentials: state.authentication.credentials,
 })
 
