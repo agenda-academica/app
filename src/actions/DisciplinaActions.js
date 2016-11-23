@@ -28,6 +28,8 @@ export const failureDisciplinaDestroy = error => ({ type: FAILURE_DISCIPLINA_DES
 
 export const DISCIPLINA_PICKER_SET_SELECTED = 'DISCIPLINA_PICKER_SET_SELECTED'
 export const setDisciplinaPickerSelected = selected => ({ type: DISCIPLINA_PICKER_SET_SELECTED, selected })
+export const DISCIPLINA_SET_UPDATE = 'DISCIPLINA_SET_UPDATE'
+export const setUpdate = update => ({ type: DISCIPLINA_SET_UPDATE, update })
 
 export const DISCIPLINA_SET_HORA_INICIO = 'DISCIPLINA_SET_HORA_INICIO'
 export const setHoraInicio = horaInicio => ({ type: DISCIPLINA_SET_HORA_INICIO, horaInicio })

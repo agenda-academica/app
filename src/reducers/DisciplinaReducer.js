@@ -16,6 +16,7 @@ import {
   FAILURE_DISCIPLINA_DESTROY,
 
   DISCIPLINA_PICKER_SET_SELECTED,
+  DISCIPLINA_SET_UPDATE,
 
   DISCIPLINA_SET_HORA_INICIO,
   DISCIPLINA_SET_HORA_FIM,
@@ -35,6 +36,7 @@ const initialState = {
   pickerSelected: initialPickerItem,
   diaSemana: weekdays[0].value,
   notifyAt: notifications[0].value,
+  update: {},
 }
 
 export default DisciplinaReducer = function(state = initialState, action) {
@@ -80,6 +82,8 @@ export default DisciplinaReducer = function(state = initialState, action) {
 
     case DISCIPLINA_PICKER_SET_SELECTED:
       return { ...state, pickerSelected: action.selected }
+    case DISCIPLINA_SET_UPDATE:
+      return { ...state, update: action.update }
 
     case DISCIPLINA_SET_HORA_INICIO:
       return { ...state, horaInicio: action.horaInicio }

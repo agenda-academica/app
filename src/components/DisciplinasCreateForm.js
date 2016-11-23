@@ -29,13 +29,12 @@ class DisciplinasCreateForm extends Component {
       handleSubmit,
       invalid,
       dispatch,
-      update,
       next,
       universidade: { pickerSelected: universidadePickerSelected },
       unidade: { pickerSelected: unidadePickerSelected },
       curso: { pickerSelected: cursoPickerSelected },
       turma: { pickerSelected: turmaPickerSelected },
-      disciplina: { horaInicio, horaFim, diaSemana, notifyAt },
+      disciplina: { update, horaInicio, horaFim, diaSemana, notifyAt },
     } = this.props
 
     let selectedUniversidade = initialUniversidadePickerItem
@@ -244,6 +243,7 @@ const validate = values => {
 DisciplinasCreateForm = reduxForm({ form: 'disciplinasCreateForm', validate })(DisciplinasCreateForm)
 
 const mapStateToProps = state => ({
+  initialValues: state.disciplina.update,
   universidade: state.universidade,
   unidade: state.unidade,
   curso: state.curso,

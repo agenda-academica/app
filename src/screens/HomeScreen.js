@@ -21,6 +21,7 @@ import { Card, Loading, EmptyList } from '../components'
 import { fetchDisciplinas } from '../utilities/fetchHelpers'
 import { dateFormat } from '../utilities/dateHelpers'
 import * as placeholdit from '../constants/placeholdit'
+import { setUpdate } from '../actions/DisciplinaActions'
 
 class HomeScreen extends Component {
   static route = {
@@ -53,7 +54,7 @@ class HomeScreen extends Component {
   }
 
   _weekdayCards(weekday) {
-    const { disciplina: { list } } = this.props
+    const { dispatch, disciplina: { list } } = this.props
     const condition = disciplina => disciplina.dia_semana === weekday
     return !list.some(condition) ? (
       <View style={{
@@ -88,7 +89,8 @@ class HomeScreen extends Component {
         buttonIconName="remove-red-eye"
         buttonText="VISUALIZAR"
         buttonOnPress={() => {
-          this.props.navigator.push(Router.getRoute('disciplinasCreate', disciplina))
+          dispatch(setUpdate(disciplina))
+          this.props.navigator.push(Router.getRoute('disciplinasCreate'))
         }}
       />
     ))
