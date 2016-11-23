@@ -74,7 +74,7 @@ class TurmasScreen extends Component {
               buttonText="EDITAR"
               buttonOnPress={() => {
                 dispatch(setUpdate(turma))
-                this.props.navigator.push(Router.getRoute('turmasCreate'), turma)
+                this.props.navigator.push(Router.getRoute('turmasCreate'))
               }}
             />
           ))}

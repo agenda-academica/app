@@ -25,12 +25,11 @@ class TurmasCreateForm extends Component {
       submitting,
       touch,
       invalid,
-      update,
       next,
       universidade: { pickerSelected: universidadePickerSelected },
       unidade: { pickerSelected: unidadePickerSelected },
       curso: { pickerSelected: cursoPickerSelected },
-      turma: { representantes },
+      turma: { update, representantes },
       children,
     } = this.props
 
@@ -127,6 +126,7 @@ TurmasCreateForm = reduxForm({
 })(TurmasCreateForm)
 
 const mapStateToProps = state => ({
+  initialValues: state.turma.update,
   universidade: state.universidade,
   unidade: state.unidade,
   curso: state.curso,
