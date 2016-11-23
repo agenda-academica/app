@@ -67,7 +67,7 @@ export default DisciplinaReducer = function(state = initialState, action) {
         action.disciplina,
         ...state.list.slice(index + 1)
       ]
-      return { ...state, loading: false, loaded: true, list }
+      return { ...state, loading: false, loaded: true, list, update: {} }
     case FAILURE_DISCIPLINA_UPDATE:
       return { ...state, loading: false, error: action.error }
 

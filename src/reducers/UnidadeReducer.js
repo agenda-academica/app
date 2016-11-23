@@ -60,7 +60,7 @@ export default UnidadeReducer = function(state = initialState, action) {
         action.unidade,
         ...state.list.slice(index + 1)
       ]
-      return { ...state, loading: false, loaded: true, list }
+      return { ...state, loading: false, loaded: true, list, update: {} }
     case FAILURE_UNIDADE_UPDATE:
       return { ...state, loading: false, error: action.error }
 

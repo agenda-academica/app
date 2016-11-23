@@ -63,7 +63,7 @@ export default TurmaReducer = function(state = initialState, action) {
         action.turma,
         ...state.list.slice(index + 1)
       ]
-      return { ...state, loading: false, loaded: true, list }
+      return { ...state, loading: false, loaded: true, list, update: {} }
     case FAILURE_TURMA_UPDATE:
       return { ...state, loading: false, error: action.error }
 
