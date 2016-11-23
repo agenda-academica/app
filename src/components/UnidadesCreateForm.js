@@ -29,13 +29,12 @@ class UnidadesCreateForm extends Component {
       dispatch,
       credentials,
       next,
-      update,
       universidade: {
         loading,
         list: universidadeList,
         pickerSelected: universidadePickerSelected,
       },
-      unidade: { unidadeSede },
+      unidade: { update, unidadeSede },
     } = this.props
 
     let selectedUniversidade = initialPickerItem
@@ -118,6 +117,7 @@ UnidadesCreateForm = reduxForm({
 })(UnidadesCreateForm)
 
 const mapStateToProps = state => ({
+  initialValues: state.unidade.update,
   universidade: state.universidade,
   unidade: state.unidade,
   credentials: state.authentication.credentials,

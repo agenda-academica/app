@@ -28,6 +28,7 @@ export const failureUnidadeDestroy = error => ({ type: FAILURE_UNIDADE_DESTROY, 
 
 export const UNIDADE_SET_UNIDADE_SEDE = 'UNIDADE_SET_UNIDADE_SEDE'
 export const setUnidadeSede = unidadeSede => ({ type: UNIDADE_SET_UNIDADE_SEDE, unidadeSede })
-
 export const UNIDADE_PICKER_SET_SELECTED = 'UNIDADE_PICKER_SET_SELECTED'
 export const setUnidadePickerSelected = selected => ({ type: UNIDADE_PICKER_SET_SELECTED, selected })
+export const UNIDADE_SET_UPDATE = 'UNIDADE_SET_UPDATE'
+export const setUpdate = update => ({ type: UNIDADE_SET_UPDATE, update })

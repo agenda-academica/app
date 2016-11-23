@@ -18,6 +18,7 @@ import {
 
   UNIDADE_SET_UNIDADE_SEDE,
   UNIDADE_PICKER_SET_SELECTED,
+  UNIDADE_SET_UPDATE,
 } from '../actions/UnidadeActions'
 
 export const initialPickerItem = { id: 0, nome: '----------', universidade: {} }
@@ -28,6 +29,7 @@ const initialState = {
   list: [],
   unidadeSede: true,
   pickerSelected: initialPickerItem,
+  update: {},
 }
 
 export default UnidadeReducer = function(state = initialState, action) {
@@ -73,9 +75,10 @@ export default UnidadeReducer = function(state = initialState, action) {
 
     case UNIDADE_SET_UNIDADE_SEDE:
       return { ...state, unidadeSede: action.unidadeSede }
-
     case UNIDADE_PICKER_SET_SELECTED:
       return { ...state, pickerSelected: action.selected }
+    case UNIDADE_SET_UPDATE:
+      return { ...state, update: action.update }
 
     default:
       return state

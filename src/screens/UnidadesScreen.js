@@ -18,6 +18,7 @@ import ActionButton from 'react-native-action-button'
 import Router from '../Router'
 import { Card, EmptyList, Loading } from '../components'
 import { fetchUnidades } from '../utilities/fetchHelpers'
+import { setUpdate } from '../actions/UnidadeActions'
 
 class UnidadesScreen extends Component {
   static route = {
@@ -36,7 +37,7 @@ class UnidadesScreen extends Component {
   }
 
   render() {
-    const { unidade: { loading, list } } = this.props
+    const { dispatch, unidade: { loading, list } } = this.props
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -67,7 +68,8 @@ class UnidadesScreen extends Component {
               buttonIconName="edit"
               buttonText="EDITAR"
               buttonOnPress={() => {
-                this.props.navigator.push(Router.getRoute('unidadesCreate', unidade))
+                dispatch(setUpdate(unidade))
+                this.props.navigator.push(Router.getRoute('unidadesCreate'))
               }}
             />
           ))}
