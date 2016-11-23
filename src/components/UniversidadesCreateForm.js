@@ -32,7 +32,7 @@ import {
 
 class UniversidadesCreateForm extends Component {
   _save({ values, logo }) {
-    const { update } = this.props
+    const { universidade: { update } } = this.props
     if (isEmptyObject(update)) this._create({ values, logo })
     else this._update({ values, logo })
   }
@@ -59,7 +59,7 @@ class UniversidadesCreateForm extends Component {
   }
 
   _update({ values, logo }) {
-    const { update, dispatch, credentials, successRedirect } = this.props
+    const { universidade: { update }, dispatch, credentials, successRedirect } = this.props
 
     const method = 'PUT'
     const headers = { ...applicationJSON, ...credentials }
