@@ -3,7 +3,7 @@
   description: "Agenda Acadêmica - Organização do dia a dia do professor.",
   slug: "agenda-academica",
   sdkVersion: "10.0.0",
-  version: "0.0.1",
+  version: "0.1.0",
   orientation: "portrait",
   primaryColor: "#005bb1",
   iconUrl: "https://s3-sa-east-1.amazonaws.com/agenda-academica/agenda-academica-logo-circle.png",
