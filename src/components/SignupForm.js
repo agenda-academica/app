@@ -133,14 +133,16 @@ const validate = values => {
     errors.email = ' - Insira um email válido'
 
   if (!values.password)
-    errors.password = ' - Obrigatório'
-  else if (
-    values.password.length < 8 ||
-    !hasSpecialChars(values.password) ||
-    !hasNumbersChars(values.password) ||
-    !hasUppercaseChars(values.password)
-  ) errors.password = ' - A senha deve conter no mínimo 8 caracteres,'
-      + ' letras maiúsculas, números e letras'
+    errors.password = ' - Obrigatório. A senha deve conter letras maiúsculas, '
+      + 'caracteres especiais e números.'
+  else if (values.password.length < 8)
+    errors.password = ' - A senha deve conter no mínimo 8 caracteres.'
+  else if (!hasSpecialChars(values.password))
+    errors.password = ' - A senha deve conter pelo menos 1 caracter especial. (ex: !@#)'
+  else if (!hasNumbersChars(values.password))
+    errors.password = ' - A senha deve conter pelo menos 1 número. (ex: 012)'
+  else if (!hasUppercaseChars(values.password))
+    errors.password = ' - A senha deve conter pelo menos 1 letra maiúscula. (ex: ABC)'
 
   if (!values.passwordConfirm)
     errors.passwordConfirm = ' - Obrigatório'
