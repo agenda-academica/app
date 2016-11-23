@@ -18,6 +18,10 @@ import {
   SHARE_MATERIAL_PUSH_MATERIAL,
   SHARE_MATERIAL_POP_MATERIAL,
   SHARE_MATERIAL_SET_SELECTED,
+
+  REQUEST_SHARE_MATERIAL_RE_SHARE,
+  SUCCESS_SHARE_MATERIAL_RE_SHARE,
+  FAILURE_SHARE_MATERIAL_RE_SHARE,
 } from '../actions/ShareMaterialActions'
 
 const initialState = {
@@ -77,6 +81,14 @@ export default ShareMaterialReducer = function(state = initialState, action) {
       return { ...state, anexos: [...state.anexos.slice(0, index), ...state.anexos.slice(index + 1)] }
     case SHARE_MATERIAL_SET_SELECTED:
       return { ...state, selected: action.selected }
+
+    case REQUEST_SHARE_MATERIAL_RE_SHARE:
+      return { ...state, loading: true }
+    case SUCCESS_SHARE_MATERIAL_RE_SHARE:
+      return { ...state, loading: false }
+    case FAILURE_SHARE_MATERIAL_RE_SHARE:
+      return { ...state, loading: false, error: action.error }
+
     default:
       return state
   }

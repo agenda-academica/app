@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Icon,
+  Alert,
 } from 'react-native'
 import {
   SlidingTabNavigation,
@@ -18,6 +19,13 @@ import ActionButton from 'react-native-action-button'
 import Router from '../Router'
 import { Card, EmptyList, Loading } from '../components'
 import { fetchShareMaterials } from '../utilities/fetchHelpers'
+import { API_URL } from '../constants/api'
+import { applicationJSON } from '../utilities/requestHelpers'
+import {
+  requestShareMaterialReShare,
+  successShareMaterialReShare,
+  failureShareMaterialReShare,
+} from '../actions/ShareMaterialActions'
 
 class ShareMaterialsScreen extends Component {
   static route = {
@@ -36,7 +44,7 @@ class ShareMaterialsScreen extends Component {
   }
 
   render() {
-    const { dispatch, shareMaterial: { loading, list } } = this.props
+    const { dispatch, credentials, shareMaterial: { loading, list } } = this.props
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -68,22 +76,38 @@ class ShareMaterialsScreen extends Component {
                 text: `${material.anexos.length} anexo${material.anexos.length !== 1 ? 's' : ''}`,
                 color: '#AA0000',
               }]}
+              title={material.titulo}
               universidadeName={material.universidade.nome}
               unidadeName={material.unidade.nome}
               cursoName={material.curso.nome}
               turmaName={material.turma.nome}
-              doubleButton
-              buttonLeft={{
-                iconName: 'remove-red-eye',
-                title: 'VISUALIZAR',
-                onPress: () => {
-                  this.props.navigator.push(Router.getRoute('shareMaterialsCreate'), material)
-                }
-              }}
-              buttonRight={{
-                iconName: 'send',
-                title: 'REENVIAR',
-                onPress: () => console.log('REENVIAR EMAIL COM MATERIAIS')
+              buttonIconName="send"
+              buttonText="REENVIAR"
+              buttonOnPress={() => {
+                Alert.alert(
+                  'Confirmação!',
+                  `Deseja realmente reenviar o email de compartilhamento do material: "${material.titulo}"?`,
+                  [{ text: 'Não' }, { text: 'Sim', onPress: () => {
+                    const method = 'POST'
+                    const headers = { ...applicationJSON, credentials }
+
+                    dispatch(requestShareMaterialReShare())
+                    return fetch(`${API_URL}/materials/${material.id}/resend_share_email`, { method, headers })
+                      .then(response =>
+                        response.json().then(data => {
+                          if (data.errors && data.errors.length) dispatch(failureShareMaterialReShare(data.errors[0]))
+                          else {
+                            dispatch(successShareMaterialReShare(data))
+                            Alert.alert(
+                              'Sucesso!',
+                              `O material "${data.titulo}" foi reenviado com sucesso!`,
+                              [{ text: 'Ok' }]
+                            )
+                          }
+                        })
+                      ).catch(error => dispatch(failureShareMaterialReShare(error)))
+                  } }]
+                )
               }}
             />
           ))}

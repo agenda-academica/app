@@ -33,3 +33,10 @@ export const popMaterial = material => ({ type: SHARE_MATERIAL_POP_MATERIAL, mat
 
 export const SHARE_MATERIAL_SET_SELECTED = 'SHARE_MATERIAL_SET_SELECTED'
 export const setSelected = selected => ({ type: SHARE_MATERIAL_SET_SELECTED, selected })
+
+export const REQUEST_SHARE_MATERIAL_RE_SHARE = 'REQUEST_SHARE_MATERIAL_RE_SHARE'
+export const SUCCESS_SHARE_MATERIAL_RE_SHARE = 'SUCCESS_SHARE_MATERIAL_RE_SHARE'
+export const FAILURE_SHARE_MATERIAL_RE_SHARE = 'FAILURE_SHARE_MATERIAL_RE_SHARE'
+export const requestShareMaterialReShare = () => ({ type: REQUEST_SHARE_MATERIAL_RE_SHARE })
+export const successShareMaterialReShare = () => ({ type: SUCCESS_SHARE_MATERIAL_RE_SHARE })
+export const failureShareMaterialReShare = () => ({ type: FAILURE_SHARE_MATERIAL_RE_SHARE })
