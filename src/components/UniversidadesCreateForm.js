@@ -92,7 +92,7 @@ class UniversidadesCreateForm extends Component {
       credentials,
       successRedirect,
     } = this.props
-    const { update } = this.props
+    const { universidade: { update } } = this.props
 
     const imageUploadUri = !!imageUpload && imageUpload.uri
     const imagePlaceholder = placeholdit.size({ width: 150, height: 150 })
@@ -230,9 +230,10 @@ UniversidadesCreateForm = reduxForm({
 })(UniversidadesCreateForm)
 
 const mapStateToProps = state => ({
-  initialValues: state.universidades || { nome: null },
+  initialValues: state.universidade.update,
   imageUpload: state.upload.image,
   credentials: state.authentication.credentials,
+  universidade: state.universidade,
 })
 
 UniversidadesCreateForm = connect(mapStateToProps)(UniversidadesCreateForm)

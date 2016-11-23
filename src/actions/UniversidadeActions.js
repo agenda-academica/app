@@ -33,3 +33,5 @@ export const failureUniversidadeDestroy = error => ({ type: FAILURE_UNIVERSIDADE
 export const UNIVERSIDADE_PICKER_SET_SELECTED = 'UNIVERSIDADE_PICKER_SET_SELECTED'
 export const setUniversidadePickerSelected = selected =>
   ({ type: UNIVERSIDADE_PICKER_SET_SELECTED, selected })
+export const UNIVERSIDADE_SET_UPDATE = 'UNIVERSIDADE_SET_UPDATE'
+export const setUpdate = update => ({ type: UNIVERSIDADE_SET_UPDATE, update })

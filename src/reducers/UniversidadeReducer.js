@@ -16,6 +16,7 @@ import {
   FAILURE_UNIVERSIDADE_DESTROY,
 
   UNIVERSIDADE_PICKER_SET_SELECTED,
+  UNIVERSIDADE_SET_UPDATE,
 } from '../actions/UniversidadeActions'
 
 export const initialPickerItem = { id: 0, abreviacao: '----------' }
@@ -25,6 +26,7 @@ const initialState = {
   loaded: false,
   list: [],
   pickerSelected: initialPickerItem,
+  update: {},
 }
 
 export default UniversidadeReducer = function(state = initialState, action) {
@@ -70,6 +72,8 @@ export default UniversidadeReducer = function(state = initialState, action) {
 
     case UNIVERSIDADE_PICKER_SET_SELECTED:
       return { ...state, pickerSelected: action.selected }
+    case UNIVERSIDADE_SET_UPDATE:
+      return { ...state, update: action.update }
 
     default:
       return state

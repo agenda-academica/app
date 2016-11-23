@@ -21,6 +21,7 @@ import { Card, Loading, EmptyList } from '../components'
 import { API_URL } from '../constants/api'
 import { applicationJSON } from '../utilities/requestHelpers'
 import { fetchUniversidades } from '../utilities/fetchHelpers'
+import { setUpdate } from '../actions/UniversidadeActions'
 
 class UniversidadesScreen extends Component {
   static route = {
@@ -39,7 +40,7 @@ class UniversidadesScreen extends Component {
   }
 
   render() {
-    const { universidade: { loading, list } } = this.props
+    const { dispatch, universidade: { loading, list } } = this.props
 
     return (
       <View style={styles.container}>
@@ -68,7 +69,8 @@ class UniversidadesScreen extends Component {
               buttonIconName="edit"
               buttonText="EDITAR"
               buttonOnPress={() => {
-                this.props.navigator.push(Router.getRoute('universidadesCreate', universidade))
+                dispatch(setUpdate(universidade))
+                this.props.navigator.push(Router.getRoute('universidadesCreate'))
               }}
             />
           ))}
