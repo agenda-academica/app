@@ -12,6 +12,7 @@ import ReactNative, {
 } from 'react-native'
 import { RNS3 } from 'react-native-aws3'
 import md5 from 'md5'
+import ENV from '../../env'
 
 import { uploadImage } from '../actions/UploadAction'
 import { ReduxFormInput } from './'
@@ -146,14 +147,11 @@ class UniversidadesCreateForm extends Component {
           disabled={invalid}
           buttonStyle={styles.submitButton}
           onPress={handleSubmit(values => {
-            console.log('imageUploadUri', imageUploadUri)
             if (!imageUploadUri) {
               const logo = undefined
               this._save({ values, logo })
-              console.log('[UniversidadesCreateForm]: dont update image')
             }
             else {
-              console.log('[UniversidadesCreateForm]: update image')
               const imageExt = imageUploadUri.match(/\.(.*)$/)[1]
               const file = {
                 uri: imageUpload.uri,
@@ -162,10 +160,10 @@ class UniversidadesCreateForm extends Component {
               }
               const options = {
                 keyPrefix: 'uploads/',
-                bucket: 'agenda-academica',
-                region: 'sa-east-1',
-                accessKey: 'AKIAJQ6LDL2L4TA5BJSA',
-                secretKey: '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',
+                bucket: ENV['AWS_S3_BUCKET'],
+                region: ENV['AWS_S3_REGION'],
+                accessKey: ENV['AWS_S3_ACCESS_KEY'],
+                secretKey: ENV['AWS_S3_SECRET_KEY'],
                 successActionStatus: 201
               }
 

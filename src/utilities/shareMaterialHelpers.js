@@ -25,16 +25,17 @@ import {
 } from '../actions/ShareMaterialActions'
 import { mockCredentials } from '../utilities/fetchHelpers'
 import { isEmptyObject } from '../utilities/validationHelpers'
+import ENV from '../../env'
 
 export const save = props => {
   const { values, anexos, turma: { pickerSelected } } = props
 
   const options = {
     keyPrefix: 'uploads/',
-    bucket: 'agenda-academica',
-    region: 'sa-east-1',
-    accessKey: 'AKIAJQ6LDL2L4TA5BJSA',
-    secretKey: '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',
+    bucket: ENV['AWS_S3_BUCKET'],
+    region: ENV['AWS_S3_REGION'],
+    accessKey: ENV['AWS_S3_ACCESS_KEY'],
+    secretKey: ENV['AWS_S3_SECRET_KEY'],
     successActionStatus: 201
   }
   const promises = anexos.map(material => {
@@ -64,8 +65,6 @@ const _create = props => {
   const method = 'POST'
   const headers = { ...applicationJSON, ...credentials }
   const body = JSON.stringify({ material })
-
-  console.log('body', body)
 
   dispatch(requestShareMaterialCreate())
   return fetch(`${API_URL}/materials`, { method, headers, body })

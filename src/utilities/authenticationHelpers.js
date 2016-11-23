@@ -15,15 +15,14 @@ import {
 } from '../actions/AuthenticationAction'
 import { mockCredentials } from '../utilities/fetchHelpers'
 import { isEmptyObject } from '../utilities/validationHelpers'
+import ENV from '../../env'
 
 export const save = props => {
   const { imageUploadUri, values, dispatch } = props
 
   if (!imageUploadUri) {
-    console.log('do not have to upload the image')
     update({ values, props });
   } else {
-    console.log('have to upload the image')
     const imageExt = imageUploadUri.match(/\.(.*)$/)[1]
     const file = {
       uri: imageUploadUri,
@@ -32,10 +31,10 @@ export const save = props => {
     }
     const options = {
       keyPrefix: 'uploads/',
-      bucket: 'agenda-academica',
-      region: 'sa-east-1',
-      accessKey: 'AKIAJQ6LDL2L4TA5BJSA',
-      secretKey: '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',
+      bucket: ENV['AWS_S3_BUCKET'],
+      region: ENV['AWS_S3_REGION'],
+      accessKey: ENV['AWS_S3_ACCESS_KEY'],
+      secretKey: ENV['AWS_S3_SECRET_KEY'],
       successActionStatus: 201
     }
 
@@ -44,7 +43,6 @@ export const save = props => {
       .then(responseImage => {
         if (responseImage.status !== 201) throw new Error('Failed to upload image to S3')
         dispatch(uploadSetLoading(false))
-        console.log('uploaded avatar url', responseImage.body.postResponse.location)
         update({ values: { ...values, avatar: responseImage.body.postResponse.location }, props })
       })
   }
@@ -53,14 +51,9 @@ export const save = props => {
 const update = ({ values, props }) => {
   const { dispatch, credentials, next } = props
 
-  console.log('update values', values)
   const method = 'PUT'
   const headers = { ...applicationJSON, ...credentials }
   const body = JSON.stringify({ ...values })
-
-  console.log('method', method)
-  console.log('headers', headers)
-  console.log('body', body)
 
   dispatch(requestMyAccountUpdate())
   return fetch(`${API_URL}/auth`, { method, headers, body })
