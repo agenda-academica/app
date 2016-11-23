@@ -41,7 +41,6 @@ class MyAccountForm extends Component {
     } = this.props
 
     const imageUploadUri = !!imageUpload && imageUpload.uri
-    console.log('dirty', dirty)
 
     return (
       <View style={styles.container}>

@@ -12,7 +12,6 @@ export { default as UniversidadesCreateScreen } from './UniversidadesCreateScree
 export { default as UnidadesCreateScreen } from './UnidadesCreateScreen'
 export { default as CursosCreateScreen } from './CursosCreateScreen'
 export { default as TurmasCreateScreen } from './TurmasCreateScreen'
-export { default as RepresentanteCreateScreen } from './RepresentanteCreateScreen'
 export { default as ShareMaterialsCreateScreen } from './ShareMaterialsCreateScreen'
 export { default as DisciplinasCreateScreen } from './DisciplinasCreateScreen'
 

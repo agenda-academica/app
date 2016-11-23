@@ -5,7 +5,6 @@ import { FormLabel, FormInput } from 'react-native-elements'
 class ReduxFormInput extends Component {
   componentDidMount(props) {
     const { update, input: { onChange, name }, touch } = this.props
-    console.log(!!update)
     if (!!update && !!Object.keys(update).length) {
      touch(name)
      onChange(update[name])

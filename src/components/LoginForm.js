@@ -63,7 +63,6 @@ class LoginForm extends Component {
                 body: JSON.stringify(values),
               }).then(response => {
                 response.json().then(data => {
-                  console.log('data', data)
                   if (data.errors && data.errors.length)
                     dispatch(failureLoginAuthentication(data.errors[0]))
                   else {

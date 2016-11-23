@@ -9,7 +9,6 @@ import DrawerNavigationExample from '../../components/DrawerNavigationExample'
 export class HomeContainer extends Component {
   render() {
     const { hasAuthenticated } = this.props
-    console.log('hasAuthenticated', hasAuthenticated)
     return (
       <NavigationProvider router={Router}>
         <StatusBar barStyle="light-content" />

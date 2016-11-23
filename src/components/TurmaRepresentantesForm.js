@@ -14,9 +14,7 @@ import * as placeholdit from '../constants/placeholdit'
 
 class TurmaRepresentantesForm extends Component {
   componentDidMount() {
-    console.log('this.props', this.props)
     const { dispatch, turma: { update } } = this.props
-    console.log('[componentWillMount] update:', update)
     !isEmptyObject(update) && dispatch(setRepresentantes(update.representantes))
   }
   render() {
@@ -31,8 +29,6 @@ class TurmaRepresentantesForm extends Component {
       update,
       turma: { representantes },
     } = this.props
-
-    console.log('repre update', update)
 
     return (
       <View style={styles.container}>

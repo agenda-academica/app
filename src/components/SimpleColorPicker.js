@@ -24,7 +24,6 @@ class SimpleColorPicker extends Component {
       selected,
       simpleColorPicker: { selected: simpleColorPickerSelected, show },
     } = this.props
-    console.log('simpleColorPickerSelected', simpleColorPickerSelected)
     const selectedStrategy = selected || simpleColorPickerSelected
     return show && (
       <View style={styles.overlay}>

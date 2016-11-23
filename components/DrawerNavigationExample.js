@@ -19,7 +19,6 @@ import * as placeholdit from '../src/constants/placeholdit'
 class DrawerNavigationExample extends Component {
   _renderHeader = () => {
     const { user } = this.props
-    console.log('user', user)
     return (
       <View style={styles.menuHeader}>
         <Image
