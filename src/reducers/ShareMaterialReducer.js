@@ -22,6 +22,8 @@ import {
   REQUEST_SHARE_MATERIAL_RE_SHARE,
   SUCCESS_SHARE_MATERIAL_RE_SHARE,
   FAILURE_SHARE_MATERIAL_RE_SHARE,
+
+  SHARE_MATERIAL_RESET,
 } from '../actions/ShareMaterialActions'
 
 const initialState = {
@@ -88,6 +90,9 @@ export default ShareMaterialReducer = function(state = initialState, action) {
       return { ...state, loading: false }
     case FAILURE_SHARE_MATERIAL_RE_SHARE:
       return { ...state, loading: false, error: action.error }
+
+    case SHARE_MATERIAL_RESET:
+      return { ...state, selected: undefined, anexos: [] }
 
     default:
       return state

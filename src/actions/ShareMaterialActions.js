@@ -40,3 +40,6 @@ export const FAILURE_SHARE_MATERIAL_RE_SHARE = 'FAILURE_SHARE_MATERIAL_RE_SHARE'
 export const requestShareMaterialReShare = () => ({ type: REQUEST_SHARE_MATERIAL_RE_SHARE })
 export const successShareMaterialReShare = () => ({ type: SUCCESS_SHARE_MATERIAL_RE_SHARE })
 export const failureShareMaterialReShare = () => ({ type: FAILURE_SHARE_MATERIAL_RE_SHARE })
+
+export const SHARE_MATERIAL_RESET = 'SHARE_MATERIAL_RESET'
+export const reset = () => ({ type: SHARE_MATERIAL_RESET })

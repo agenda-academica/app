@@ -21,7 +21,7 @@ class UnidadePicker extends Component {
 
   setSelected(list) {
     const { dispatch, selected } = this.props
-    const selectedIndex = list.findIndex(unidade => unidade.id === selected.id)
+    const selectedIndex = !!selected ? list.findIndex(unidade => unidade.id === selected.id) : 0
     dispatch(setUnidadePickerSelected(list[selectedIndex]))
   }
 

@@ -2,14 +2,14 @@
   name: "Agenda Acadêmica",
   description: "Agenda Acadêmica - Organizando o dia a dia do professor.",
   slug: "agenda-academica",
-  sdkVersion: "10.0.0",
+  sdkVersion: "UNVERSIONED",
   version: "0.1.0",
   orientation: "portrait",
   primaryColor: "#005bb1",
   iconUrl: "https://s3-sa-east-1.amazonaws.com/agenda-academica/agenda-academica-logo-circle.png",
   notification: {
-    iconUrl: "https://s3-sa-east-1.amazonaws.com/agenda-academica/agenda-academica-48-gray.png",
-    color: "#666666"
+    iconUrl: "https://s3-sa-east-1.amazonaws.com/agenda-academica/agenda-academica-logo-circle-80.png",
+    color: "#FFFFFF"
   },
   androidHideExponentNotificationInShellApp: true,
   loading: {

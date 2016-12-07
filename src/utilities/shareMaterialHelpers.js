@@ -7,6 +7,8 @@ import { applicationJSON } from '../utilities/requestHelpers'
 import { API_URL } from '../constants/api'
 import { setLoading as uploadSetLoading } from '../actions/UploadAction'
 import {
+  reset,
+
   requestShareMaterialCreate,
   successShareMaterialCreate,
   failureShareMaterialCreate,
@@ -38,10 +40,9 @@ export const save = props => {
     secretKey: ENV['AWS_S3_SECRET_KEY'],
     successActionStatus: 201
   }
-  const promises = anexos.map(material => {
-    const ext = material.file.match(/\.(.*)$/)[1]
+  const promises = anexos.map(({ file: { uri, ext } }) => {
     const file = {
-      uri: material.file,
+      uri,
       name: `${md5(newId())}.${ext}`,
       type: 'application/octet-stream'
     }
@@ -71,7 +72,11 @@ const _create = props => {
     .then(response =>
       response.json().then(data => {
         if (hasError(data)) dispatch(failureShareMaterialCreate(data.errors[0]))
-        else dispatch(successShareMaterialCreate(data)); next()
+        else {
+          dispatch(successShareMaterialCreate(data))
+          dispatch(reset())
+          next()
+        }
       })
     ).catch(error => dispatch(failureShareMaterialCreate(error)))
 }

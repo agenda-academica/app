@@ -21,3 +21,6 @@ export const failureMyAccountDestroy = error => ({ type: FAILURE_MY_ACCOUNT_DEST
 
 export const MY_ACCOUNT_SET_SHOW_PASSWORD_FIELD = 'MY_ACCOUNT_SET_SHOW_PASSWORD_FIELD'
 export const setShowPasswordField = show => ({ type: MY_ACCOUNT_SET_SHOW_PASSWORD_FIELD, show })
+
+export const QQQ_SET_FILE = 'QQQ_SET_FILE'
+export const setFile = file => ({ type: QQQ_SET_FILE, file })

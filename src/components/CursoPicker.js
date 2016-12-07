@@ -21,7 +21,7 @@ class CursoPicker extends Component {
 
   setSelected(list) {
     const { dispatch, selected } = this.props
-    const selectedIndex = list.findIndex(curso => curso.id === selected.id)
+    const selectedIndex = !!selected ? list.findIndex(curso => curso.id === selected.id) : 0
     dispatch(setCursoPickerSelected(list[selectedIndex]))
   }
 

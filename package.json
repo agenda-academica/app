@@ -1,20 +1,21 @@
 {
-  "name": "ExNavigationExample",
-  "version": "0.0.1",
-  "private": true,
+  "name": "AgendaAcademicaApp",
+  "version": "0.1.0",
   "main": "main.js",
+  "private": true,
   "dependencies": {
-    "@exponent/ex-navigation": "file:../",
+    "@exponent/ex-navigation": "github:exponentjs/ex-navigation",
     "@exponent/vector-icons": "^1.0.4",
-    "exponent": "^10.0.4",
+    "exponent": "^11.0.2",
     "lodash": "^4.13.1",
     "md5": "^2.2.1",
     "react": "~15.3.1",
-    "react-native": "github:exponentjs/react-native#sdk-10.0.1",
+    "react-native": "github:exponentjs/react-native#sdk-11.0.0",
     "react-native-action-button": "^2.0.8",
     "react-native-aws3": "0.0.2",
     "react-native-calendar": "^0.8.0",
     "react-native-elements": "^0.6.2",
+    "react-native-file-picker": "git+https://github.com/callstack-io/react-native-file-picker.git",
     "react-native-keyboard-spacer": "^0.3.0",
     "react-native-spinkit": "^0.1.3",
     "react-native-vector-icons": "github:exponentjs/react-native-vector-icons",
@@ -27,5 +28,8 @@
   "devDependencies": {
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-react-native-stage-0": "^1.0.1"
-  }
+  },
+  "repository": "git@github.com:agenda-academica/app.git",
+  "author": "Gabriel Ramos Takeda <gabrielrtakeda@gmail.com>",
+  "license": "MIT"
 }

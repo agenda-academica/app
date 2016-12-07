@@ -21,7 +21,7 @@ class UniversidadePicker extends Component {
 
   setSelected(list) {
     const { dispatch, selected } = this.props
-    const selectedIndex = list.findIndex(universidade => universidade.id === selected.id)
+    const selectedIndex = !!selected ? list.findIndex(universidade => universidade.id === selected.id) : 0
     dispatch(setUniversidadePickerSelected(list[selectedIndex]))
   }
 

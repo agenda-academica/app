@@ -21,7 +21,7 @@ class DisciplinaPicker extends Component {
 
   setSelected(list) {
     const { dispatch, selected } = this.props
-    const selectedIndex = list.findIndex(disciplina => disciplina.id === selected.id)
+    const selectedIndex = !!selected ? list.findIndex(disciplina => disciplina.id === selected.id) : 0
     dispatch(setDisciplinaPickerSelected(list[selectedIndex]))
   }
 

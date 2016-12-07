@@ -12,6 +12,7 @@ import {
   FAILURE_MY_ACCOUNT_DESTROY,
 
   MY_ACCOUNT_SET_SHOW_PASSWORD_FIELD,
+  QQQ_SET_FILE,
 } from '../actions/AuthenticationAction'
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
   credentials: {},
   user: {},
   showPasswordField: false,
+  file: {},
 }
 
 export default AuthenticationReducer = function(state = initialState, action) {
@@ -57,6 +59,8 @@ export default AuthenticationReducer = function(state = initialState, action) {
 
     case MY_ACCOUNT_SET_SHOW_PASSWORD_FIELD:
       return { ...state, showPasswordField: action.show }
+    case QQQ_SET_FILE:
+      return { ...state, file: action.file }
     default:
       return state
   }

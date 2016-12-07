@@ -21,7 +21,7 @@ class TurmaPicker extends Component {
 
   setSelected(list) {
     const { dispatch, selected } = this.props
-    const selectedIndex = list.findIndex(turma => turma.id === selected.id)
+    const selectedIndex = !!selected ? list.findIndex(turma => turma.id === selected.id) : 0
     dispatch(setTurmaPickerSelected(list[selectedIndex]))
   }
 
