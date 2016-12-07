@@ -218,7 +218,7 @@ class EventoForm extends Component {
             <FormLabel>Data início</FormLabel>
             <Button
               onPress={() => {
-                DatePickerAndroid.open({ date: dataInicio }).then(data => {
+                DatePickerAndroid.open({ date: dataInicio, minDate: dataInicio }).then(data => {
                   const { action, year, month, day } = data
                   if (action === DatePickerAndroid.dateSetAction) {
                     dispatch(setDataInicio(new Date(year, month, day)))
