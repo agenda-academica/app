@@ -5,13 +5,7 @@ import { FormLabel, Button, CheckBox } from 'react-native-elements'
 import { StyleSheet, View, TimePickerAndroid, Picker } from 'react-native'
 import { FontAwesome } from '@exponent/vector-icons'
 
-import {
-  ReduxFormInput,
-  UniversidadePicker,
-  UnidadePicker,
-  CursoPicker,
-  TurmaPicker,
-} from '../components'
+import { ReduxFormInput, UniversidadePicker, UnidadePicker, CursoPicker, TurmaPicker } from '../components'
 import { pad } from '../utilities/stringHelpers'
 import { isEmptyObject } from '../utilities/validationHelpers'
 import { initialPickerItem as initialUniversidadePickerItem } from '../reducers/UniversidadeReducer'

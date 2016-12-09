@@ -4,12 +4,25 @@ import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Icon, Dimensions 
 import { SlidingTabNavigation, SlidingTabNavigationItem } from '@exponent/ex-navigation'
 import { MaterialIcons } from '@exponent/vector-icons'
 import ActionButton from 'react-native-action-button'
+import { List, ListItem } from 'react-native-elements'
 
 import Router from '../Router'
 import { Card, Loading, EmptyList } from '../components'
 import { fetchEventos } from '../utilities/fetchHelpers'
 import { dateFormat } from '../utilities/dateHelpers'
 import * as placeholdit from '../constants/placeholdit'
+import { setPromisesLoaded } from '../actions/PickerSyncActions'
+
+const TypeTabHeader = ({ icon, text }) => (
+  <View style={{ flex: 10, flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginTop: 25 }}>
+    <View style={{ marginRight: 10 }}>
+      <MaterialIcons name={icon} style={{ alignSelf: 'center', fontSize: 50, color: '#aaa' }} />
+    </View>
+    <View>
+      <Text style={{ color: '#aaa' }}>{text}</Text>
+    </View>
+  </View>
+)
 
 class EventosScreen extends Component {
   static route = {
@@ -38,31 +51,38 @@ class EventosScreen extends Component {
   }
 
   _card(list) {
-    return list.map(evento => (
-      <Card
-        key={`evento-${evento.id}`}
-        image={{
-          uri:
-            evento.universidade.logo ||
-            placeholdit.card(evento.universidade.abreviacao.toUpperCase())
+    const { dispatch } = this.props
+    return (
+      <List
+        containerStyle={{
+          borderBottomColor: "#fff",
+          borderTopColor: '#f0f0f0',
+          marginBottom: 30
         }}
-        title={evento.titulo}
-        subtitle={`${evento.data_inicio.replace(/^(\d{4})-(\d{2})-(\d{2})/, '$3/$2/$1')} às ${evento.hora_inicio.replace(/^.*T(\d{2}):(\d{2}).*$/, '$1h$2')}`}
-        description={evento.descricao}
-        listItem={[
-          { icon: 'arrow-drop-down-circle', color: evento.cor, text: `Começa dia ${evento.data_inicio.replace(/^(\d{4})-(\d{2})-(\d{2})/, '$3/$2/$1')} às ${evento.hora_inicio.replace(/^.*T(\d{2}):(\d{2}).*$/, '$1h$2')}` },
-          { icon: 'arrow-drop-down-circle', color: evento.cor, text: `Termina dia ${evento.data_fim.replace(/^(\d{4})-(\d{2})-(\d{2})/, '$3/$2/$1')} às ${evento.hora_fim.replace(/^.*T(\d{2}):(\d{2}).*$/, '$1h$2')}` },
-        ]}
-        universidadeName={evento.universidade.nome}
-        unidadeName={evento.unidade.nome}
-        cursoName={evento.curso.nome}
-        turmaName={evento.turma.nome}
-        disciplinaName={evento.disciplina.nome}
-        buttonIconName="edit"
-        buttonText="EDITAR"
-        buttonOnPress={() => this.props.navigator.push(Router.getRoute('eventoForm', evento))}
-      />
-    ))
+      >
+        {
+          list.map(event => (
+            <ListItem
+              key={`point-event-${event.id}`}
+              title={event.titulo}
+              subtitle={
+                dateFormat.hhmm(new Date(event.hora_inicio), 'h')
+                +' às '+ dateFormat.hhmm(new Date(event.hora_fim), 'h')
+                +', '+ event.universidade.abreviacao
+                +', '+ event.unidade.nome
+                +', '+ event.curso.abreviacao
+                +', '+ event.turma.nome
+              }
+              leftIcon={{ name: "circle", type: 'font-awesome', color: event.cor }}
+              onPress={() => {
+                dispatch(setPromisesLoaded(false, []))
+                this.props.navigator.push(Router.getRoute('eventoForm', event))
+              }}
+            />
+          ))
+        }
+      </List>
+    )
   }
 
   render() {
@@ -94,7 +114,10 @@ class EventosScreen extends Component {
                 />
               </View>
             ) : (
-              <ScrollView>{this._card(provas)}</ScrollView>
+              <ScrollView>
+                <TypeTabHeader icon="security" text="Lista de provas agendadas" />
+                {this._card(provas)}
+              </ScrollView>
             )}
           </SlidingTabNavigationItem>
 
@@ -109,7 +132,10 @@ class EventosScreen extends Component {
                 />
               </View>
             ) : (
-              <ScrollView>{this._card(trabalhos)}</ScrollView>
+              <ScrollView>
+                <TypeTabHeader icon="work" text="Lista de trabalhos agendados" />
+                {this._card(trabalhos)}
+              </ScrollView>
             )}
           </SlidingTabNavigationItem>
 
@@ -124,7 +150,10 @@ class EventosScreen extends Component {
                 />
               </View>
             ) : (
-              <ScrollView>{this._card(outros)}</ScrollView>
+              <ScrollView>
+                <TypeTabHeader icon="assistant" text="Outros tipos de eventos agendados" />
+                {this._card(outros)}
+              </ScrollView>
             )}
           </SlidingTabNavigationItem>
         </SlidingTabNavigation>

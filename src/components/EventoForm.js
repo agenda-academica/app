@@ -62,6 +62,7 @@ import {
   setNotifyPeriod,
   eventoTypes,
 } from '../actions/EventoActions'
+import { setPromisesLoaded } from '../actions/PickerSyncActions'
 import { save } from '../utilities/eventoHelpers'
 
 class EventoForm extends Component {
@@ -91,10 +92,10 @@ class EventoForm extends Component {
       next,
       simpleColorPicker: { selected: color },
       universidade: { pickerSelected: universidadePickerSelected },
-      unidade: { pickerSelected: unidadePickerSelected },
-      curso: { pickerSelected: cursoPickerSelected },
-      turma: { pickerSelected: turmaPickerSelected },
-      disciplina: { pickerSelected: disciplinaPickerSelected },
+      unidade: { pickerSelected: unidadePickerSelected, list: unidadeList },
+      curso: { pickerSelected: cursoPickerSelected, list: cursoList },
+      turma: { pickerSelected: turmaPickerSelected, list: turmaList },
+      disciplina: { pickerSelected: disciplinaPickerSelected, list: disciplinaList },
       evento: {
         universidade,
         unidade,
@@ -108,6 +109,7 @@ class EventoForm extends Component {
         horaFim,
         notifyPeriod,
       },
+      pickerSync: { loaded: pickerSyncLoaded, result: pickerSyncResult },
     } = this.props
     const { update } = this.props
 
@@ -126,12 +128,57 @@ class EventoForm extends Component {
     let selectedDisciplina = initialDisciplinaPickerItem
     if (!isEmptyObject(update)) selectedDisciplina = update.disciplina
 
-    return (
+    const unidadePromise = new Promise((resolve, reject) => {
+      const filteredList = unidadeList.filter(
+        unidade => (
+          selectedUniversidade instanceof Object &&
+          unidade.universidade.id === selectedUniversidade.id
+        ) || !unidade.id
+      )
+      return resolve(filteredList)
+    })
+    const cursoPromise = new Promise((resolve, reject) => {
+      const filteredList = cursoList.filter(
+        curso => (
+          selectedUnidade instanceof Object &&
+          curso instanceof Object && curso.unidade instanceof Object &&
+          curso.unidade.id === selectedUnidade.id
+        ) || !curso.id
+      )
+      return resolve(filteredList)
+    })
+    const turmaPromise = new Promise((resolve, reject) => {
+      const filteredList = turmaList.filter(
+        turma => (
+          selectedCurso instanceof Object &&
+          turma instanceof Object && turma.curso instanceof Object &&
+          turma.curso.id === selectedCurso.id
+        ) || !turma.id
+      )
+      return resolve(filteredList)
+    })
+    const disciplinaPromise = new Promise((resolve, reject) => {
+      const filteredList = disciplinaList.filter(
+        turma => (
+          selectedTurma instanceof Object &&
+          turma instanceof Object && turma.curso instanceof Object &&
+          turma.curso.id === selectedTurma.id
+        ) || !turma.id
+      )
+      return resolve(filteredList)
+    })
+
+    Promise.all([unidadePromise, cursoPromise, turmaPromise, disciplinaPromise])
+      .then(response => { dispatch(setPromisesLoaded(true, response)) })
+      .catch(error => { console.error('error', error) })
+
+    return !pickerSyncLoaded ? <View /> : (
       <View style={styles.container}>
         <UniversidadePicker selected={selectedUniversidade} />
         <UnidadePicker
           selected={selectedUnidade}
           disabled={!universidadePickerSelected || !universidadePickerSelected.id}
+          filteredList={pickerSyncResult[0]}
           filter={
             unidade => (
               universidadePickerSelected instanceof Object &&
@@ -142,6 +189,7 @@ class EventoForm extends Component {
         <CursoPicker
           selected={selectedCurso}
           disabled={!unidadePickerSelected || !unidadePickerSelected.id}
+          filteredList={pickerSyncResult[1]}
           filter={
             curso => (
               unidadePickerSelected instanceof Object &&
@@ -153,6 +201,7 @@ class EventoForm extends Component {
         <TurmaPicker
           selected={selectedTurma}
           disabled={!cursoPickerSelected || !cursoPickerSelected.id}
+          filteredList={pickerSyncResult[2]}
           filter={
             turma => (
               cursoPickerSelected instanceof Object &&
@@ -164,6 +213,7 @@ class EventoForm extends Component {
         <DisciplinaPicker
           selected={selectedDisciplina}
           disabled={!turmaPickerSelected || !turmaPickerSelected.id}
+          filteredList={pickerSyncResult[3]}
           filter={
             disciplina => (
               turmaPickerSelected instanceof Object &&
@@ -386,6 +436,7 @@ const mapStateToProps = state => ({
   disciplina: state.disciplina,
   evento: state.evento,
   simpleColorPicker: state.simpleColorPicker,
+  pickerSync: state.pickerSync,
 })
 
 EventoForm = connect(mapStateToProps)(EventoForm)
