@@ -2,7 +2,7 @@
   name: "Agenda Acadêmica",
   description: "Agenda Acadêmica - Organizando o dia a dia do professor.",
   slug: "agenda-academica",
-  sdkVersion: "UNVERSIONED",
+  sdkVersion: "11.0.0",
   version: "0.1.0",
   orientation: "portrait",
   primaryColor: "#005bb1",
