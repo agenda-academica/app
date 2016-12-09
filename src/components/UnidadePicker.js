@@ -11,12 +11,9 @@ import { isEmptyObject } from '../utilities/validationHelpers'
 
 class UnidadePicker extends Component {
   componentWillMount() {
-    const { loaded, dispatch, credentials, selected } = this.props
-    let callback
-    if (!isEmptyObject(selected)) callback = list => this.setSelected(list)
-
-    if (!loaded) fetchUnidades({ dispatch, credentials, callback })
-    else this.setSelected(this.props.list)
+    const { list, filteredList } = this.props
+    if (filteredList) this.setSelected(filteredList)
+    else this.setSelected(list)
   }
 
   setSelected(list) {
@@ -32,10 +29,12 @@ class UnidadePicker extends Component {
       dispatch,
       unidadePickerSelected,
       filter,
+      filteredList,
       disabled,
     } = this.props
 
-    const unidades = [initialPickerItem, ...list]
+    let unidades = [initialPickerItem, ...list]
+
     return (
       <View>
         <FormLabel>Unidade</FormLabel>

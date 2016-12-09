@@ -22,6 +22,7 @@ import { setHoraInicio, setHoraFim, setDiaSemana, setNotifyAt } from '../actions
 import { save } from '../utilities/disciplinaHelpers'
 import { weekdays, notifications } from '../constants/shared'
 import { dateFormat } from '../utilities/dateHelpers'
+import { setPromisesLoaded } from '../actions/PickerSyncActions'
 
 class DisciplinasCreateForm extends Component {
   render() {
@@ -31,10 +32,11 @@ class DisciplinasCreateForm extends Component {
       dispatch,
       next,
       universidade: { pickerSelected: universidadePickerSelected },
-      unidade: { pickerSelected: unidadePickerSelected },
-      curso: { pickerSelected: cursoPickerSelected },
-      turma: { pickerSelected: turmaPickerSelected },
+      unidade: { pickerSelected: unidadePickerSelected, list: unidadeList },
+      curso: { pickerSelected: cursoPickerSelected, list: cursoList },
+      turma: { pickerSelected: turmaPickerSelected, list: turmaList },
       disciplina: { update, horaInicio, horaFim, diaSemana, notifyAt },
+      pickerSync: { loaded: pickerSyncLoaded, result: pickerSyncResult }
     } = this.props
 
     let selectedUniversidade = initialUniversidadePickerItem
@@ -49,12 +51,47 @@ class DisciplinasCreateForm extends Component {
     let selectedTurma = initialTurmaPickerItem
     if (!isEmptyObject(update)) selectedTurma = update.turma
 
-    return (
+    const unidadePromise = new Promise((resolve, reject) => {
+      const filteredList = unidadeList.filter(
+        unidade => (
+          selectedUniversidade instanceof Object &&
+          unidade.universidade.id === selectedUniversidade.id
+        ) || !unidade.id
+      )
+      return resolve(filteredList)
+    })
+    const cursoPromise = new Promise((resolve, reject) => {
+      const filteredList = cursoList.filter(
+        curso => (
+          selectedUnidade instanceof Object &&
+          curso instanceof Object && curso.unidade instanceof Object &&
+          curso.unidade.id === selectedUnidade.id
+        ) || !curso.id
+      )
+      return resolve(filteredList)
+    })
+    const turmaPromise = new Promise((resolve, reject) => {
+      const filteredList = turmaList.filter(
+        turma => (
+          selectedCurso instanceof Object &&
+          turma instanceof Object && turma.curso instanceof Object &&
+          turma.curso.id === selectedCurso.id
+        ) || !turma.id
+      )
+      return resolve(filteredList)
+    })
+
+    Promise.all([unidadePromise, cursoPromise, turmaPromise])
+      .then(response => { dispatch(setPromisesLoaded(true, response)) })
+      .catch(error => { console.error('error', error) })
+
+    return !pickerSyncLoaded ? <View /> : (
       <View style={styles.container}>
         <UniversidadePicker selected={selectedUniversidade} />
         <UnidadePicker
           selected={selectedUnidade}
           disabled={!universidadePickerSelected || !universidadePickerSelected.id}
+          filteredList={pickerSyncResult[0]}
           filter={
             unidade => (
               universidadePickerSelected instanceof Object &&
@@ -65,6 +102,7 @@ class DisciplinasCreateForm extends Component {
         <CursoPicker
           selected={selectedCurso}
           disabled={!unidadePickerSelected || !unidadePickerSelected.id}
+          filteredList={pickerSyncResult[1]}
           filter={
             curso => (
               unidadePickerSelected instanceof Object &&
@@ -76,6 +114,7 @@ class DisciplinasCreateForm extends Component {
         <TurmaPicker
           selected={selectedTurma}
           disabled={!cursoPickerSelected || !cursoPickerSelected.id}
+          filteredList={pickerSyncResult[2]}
           filter={
             turma => (
               cursoPickerSelected instanceof Object &&
@@ -249,6 +288,7 @@ const mapStateToProps = state => ({
   curso: state.curso,
   turma: state.turma,
   disciplina: state.disciplina,
+  pickerSync: state.pickerSync,
   credentials: state.authentication.credentials,
 })
 

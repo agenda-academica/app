@@ -11,12 +11,9 @@ import { isEmptyObject } from '../utilities/validationHelpers'
 
 class TurmaPicker extends Component {
   componentWillMount() {
-    const { loaded, dispatch, credentials, selected } = this.props
-    let callback
-    if (!isEmptyObject(selected)) callback = list => this.setSelected(list)
-
-    if (!loaded) fetchTurmas({ dispatch, credentials, callback })
-    else this.setSelected(this.props.list)
+    const { list, filteredList } = this.props
+    if (filteredList) this.setSelected(filteredList)
+    else this.setSelected(list)
   }
 
   setSelected(list) {

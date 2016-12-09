@@ -16,6 +16,7 @@ import {
   simpleColorPicker,
   calendario,
   shareMaterial,
+  pickerSync,
 } from '../reducers'
 
 const thunk = store => next => action => {
@@ -46,6 +47,7 @@ const store = createStore(
     simpleColorPicker,
     calendario,
     shareMaterial,
+    pickerSync,
   }),
   applyMiddleware(thunk)
 )

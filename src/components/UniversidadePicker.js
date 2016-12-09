@@ -11,12 +11,8 @@ import { isEmptyObject } from '../utilities/validationHelpers'
 
 class UniversidadePicker extends Component {
   componentWillMount() {
-    const { loaded, dispatch, credentials, selected } = this.props
-    let callback
-    if (!isEmptyObject(selected)) callback = list => this.setSelected(list)
-
-    if (!loaded) fetchUniversidades({ dispatch, credentials, callback })
-    else this.setSelected(this.props.list)
+    const { list } = this.props
+    this.setSelected(list)
   }
 
   setSelected(list) {
