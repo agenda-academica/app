@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Exponent from 'exponent'
 import { Field, reduxForm } from 'redux-form'
 import { FormLabel, FormInput, Button } from 'react-native-elements'
-import { StyleSheet, Text, View, Image, Alert } from 'react-native'
+import { StyleSheet, Text, View, Image, Alert, NativeModules } from 'react-native'
 import { MaterialIcons } from '@exponent/vector-icons'
 
 import { uploadImage } from '../actions/UploadAction'
@@ -41,6 +41,7 @@ class MyAccountForm extends Component {
     } = this.props
 
     const imageUploadUri = !!imageUpload && imageUpload.uri
+    const imageUploadExt = !!imageUpload && imageUpload.ext
 
     return (
       <View style={styles.container}>
@@ -59,10 +60,12 @@ class MyAccountForm extends Component {
             }}
           />
           <Button
-            onPress={() => Exponent.ImagePicker
-              .launchImageLibraryAsync({ allowsEditing: false, aspect: [100, 100] })
-              .then(image => dispatch(uploadImage(image)))
-            }
+            onPress={() => {
+              NativeModules.FilePickerManager
+                .pickFile({ title: 'Selecione uma imagem', type: 'image/*' })
+                .then(file => dispatch(uploadImage(file)))
+                .catch(err => { console.error('Error [MyAccountForm][FilePickerManager]', err) })
+            }}
             title={`${!avatar ? 'Selecionar' : 'Alterar'} imagem...`}
             icon={{ name: 'photo' }}
             buttonStyle={{ marginTop: 8 }}
@@ -137,7 +140,13 @@ class MyAccountForm extends Component {
           icon={{ name: 'save' }}
           disabled={invalid || (!invalid && !imageUploadUri && !dirty)}
           buttonStyle={styles.submitButton}
-          onPress={handleSubmit(values => save({ values, ...this.props, imageUploadUri }))}
+          onPress={
+            handleSubmit(values => save({
+              values,
+              ...this.props,
+              image: { uri: imageUploadUri, ext: imageUploadExt },
+            }))
+          }
         />
 
         <View style={styles.separator} />

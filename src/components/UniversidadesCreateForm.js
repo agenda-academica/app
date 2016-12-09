@@ -3,13 +3,7 @@ import { connect } from 'react-redux'
 import Exponent from 'exponent'
 import { Field, reduxForm } from 'redux-form'
 import { FormLabel, FormInput, Button } from 'react-native-elements'
-import ReactNative, {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Alert,
-} from 'react-native'
+import ReactNative, { StyleSheet, Text, View, Image, Alert, NativeModules } from 'react-native'
 import { RNS3 } from 'react-native-aws3'
 import md5 from 'md5'
 import ENV from '../../env'
@@ -95,6 +89,7 @@ class UniversidadesCreateForm extends Component {
     const { universidade: { update } } = this.props
 
     const imageUploadUri = !!imageUpload && imageUpload.uri
+    const imageUploadExt = !!imageUpload && imageUpload.ext
     const imagePlaceholder = placeholdit.size({ width: 150, height: 150 })
 
     return (
@@ -132,9 +127,12 @@ class UniversidadesCreateForm extends Component {
               corretamente nos cards de listagem de universidades.
             </Text>
             <Button
-              onPress={() => Exponent.ImagePicker
-                .launchImageLibraryAsync({ allowsEditing: false, aspect: [100, 100] })
-                .then(image => dispatch(uploadImage(image)))
+              onPress={() => {
+                NativeModules.FilePickerManager
+                  .pickFile({ title: 'Selecione uma imagem', type: 'image/*' })
+                  .then(file => dispatch(uploadImage(file)))
+                  .catch(err => { console.error('Error [UniversidadesCreateForm][FilePickerManager]', err) })
+              }
               }
               title={!imageUpload && !update.logo ? 'Selecionar' : 'Alterar'}
               small={true}
@@ -152,11 +150,10 @@ class UniversidadesCreateForm extends Component {
               this._save({ values, logo })
             }
             else {
-              const imageExt = imageUploadUri.match(/\.(.*)$/)[1]
               const file = {
-                uri: imageUpload.uri,
-                name: `${md5(new Date())}.${imageExt}`,
-                type: `image/${imageExt}`,
+                uri: imageUploadUri,
+                name: `${md5(new Date())}.${imageUploadExt}`,
+                type: 'application/octet-stream',
               }
               const options = {
                 keyPrefix: 'uploads/',

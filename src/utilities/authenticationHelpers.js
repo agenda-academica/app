@@ -18,16 +18,16 @@ import { isEmptyObject } from '../utilities/validationHelpers'
 import ENV from '../../env'
 
 export const save = props => {
-  const { imageUploadUri, values, dispatch } = props
+  const { image, values, dispatch } = props
 
-  if (!imageUploadUri) {
+  if (!image) {
     update({ values, props });
   } else {
-    const imageExt = imageUploadUri.match(/\.(.*)$/)[1]
+    const { uri, ext } = image
     const file = {
-      uri: imageUploadUri,
-      name: `${md5(new Date())}.${imageExt}`,
-      type: `image/${imageExt}`,
+      uri,
+      name: `${md5(new Date())}.${ext}`,
+      type: 'application/octet-stream',
     }
     const options = {
       keyPrefix: 'uploads/',

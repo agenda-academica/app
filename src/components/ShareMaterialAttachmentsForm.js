@@ -45,23 +45,12 @@ class ShareMaterialAttachmentsForm extends Component {
               title={`${!currentSelectedMaterialUri ? 'Selecionar' : 'Alterar'}...`}
               backgroundColor="#2C3E50"
               buttonStyle={{ marginTop: 10 }}
-              onPress={() =>
-                // Exponent.ImagePicker
-                // .launchImageLibraryAsync({ allowsEditing: false, aspect: [100, 100] })
-                // .then(image => {
-                //   console.log('image', image)
-                //   dispatch(setSelected(image))
-                // })
-
-                NativeModules.FilePickerManager.pickFile({ title: 'Pick something', type: '*/*' })
-                  .then(
-                    res => {
-                      dispatch(setSelected(res))
-                      console.log('res', res)
-                    }
-                  )
-                  .catch(err => { console.log('err', err) })
-              }
+              onPress={() => {
+                NativeModules.FilePickerManager
+                  .pickFile({ title: 'Selecione um arquivo', type: '*/*' })
+                  .then(file => dispatch(setSelected(file)))
+                  .catch(err => { console.error('Error [ShareMaterialAttachmentsForm][FilePickerManager]', err) })
+              }}
             />
           </View>
           <View style={{ flex: 1 }}>
