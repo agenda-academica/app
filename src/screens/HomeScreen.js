@@ -97,7 +97,7 @@ class HomeScreen extends Component {
   }
 
   render() {
-    const { disciplina: { loading, list, loaded } } = this.props
+    const { dispatch, disciplina: { loading, list, loaded } } = this.props
     if (!loaded || loading) return <Loading show={true} />
     return (
       <View style={styles.container}>
@@ -142,7 +142,10 @@ class HomeScreen extends Component {
           <ActionButton.Item
             buttonColor='#9b59b6'
             title="Adicionar aula"
-            onPress={this._goToScreen('disciplinasCreate')}
+            onPress={() => {
+              dispatch(setUpdate({}))
+              this._goToScreen('disciplinasCreate')()
+            }}
           >
             <MaterialIcons name="add" style={styles.actionButtonIcon} />
           </ActionButton.Item>

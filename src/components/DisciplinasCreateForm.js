@@ -180,7 +180,7 @@ class DisciplinasCreateForm extends Component {
           disabled={
             invalid ||
             !horaInicio || !horaFim || typeof diaSemana === 'undefined' ||
-            !turmaPickerSelected.id
+            (!!turmaPickerSelected && !turmaPickerSelected.id)
           }
           buttonStyle={styles.submitButton}
           onPress={
