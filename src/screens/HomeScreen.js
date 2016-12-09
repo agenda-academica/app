@@ -18,10 +18,17 @@ import ActionButton from 'react-native-action-button'
 
 import Router from '../Router'
 import { Card, Loading, EmptyList } from '../components'
-import { fetchDisciplinas } from '../utilities/fetchHelpers'
+import {
+  fetchUniversidades,
+  fetchUnidades,
+  fetchCursos,
+  fetchTurmas,
+  fetchDisciplinas,
+} from '../utilities/fetchHelpers'
 import { dateFormat } from '../utilities/dateHelpers'
 import * as placeholdit from '../constants/placeholdit'
 import { setUpdate } from '../actions/DisciplinaActions'
+import { setPromisesLoaded } from '../actions/PickerSyncActions'
 
 class HomeScreen extends Component {
   static route = {
@@ -32,7 +39,19 @@ class HomeScreen extends Component {
   }
 
   componentWillMount() {
-    const { dispatch, credentials, disciplina: { loaded } } = this.props
+    const {
+      dispatch,
+      credentials,
+      universidade: { loaded: universidadeLoaded },
+      unidade: { loaded: unidadeLoaded },
+      curso: { loaded: cursoLoaded },
+      turma: { loaded: turmaLoaded },
+      disciplina: { loaded },
+    } = this.props
+    !universidadeLoaded && fetchUniversidades({ dispatch, credentials })
+    !unidadeLoaded && fetchUnidades({ dispatch, credentials })
+    !cursoLoaded && fetchCursos({ dispatch, credentials })
+    !turmaLoaded && fetchTurmas({ dispatch, credentials })
     !loaded && fetchDisciplinas({ dispatch, credentials })
   }
 
@@ -89,6 +108,7 @@ class HomeScreen extends Component {
         buttonIconName="remove-red-eye"
         buttonText="VISUALIZAR"
         buttonOnPress={() => {
+          dispatch(setPromisesLoaded(false, []))
           dispatch(setUpdate(disciplina))
           this.props.navigator.push(Router.getRoute('disciplinasCreate'))
         }}
@@ -214,8 +234,13 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+  universidade: state.universidade,
+  unidade: state.unidade,
+  curso: state.curso,
+  turma: state.turma,
   disciplina: state.disciplina,
   credentials: state.authentication.credentials,
+  pickerSync: state.pickerSync,
 })
 
 export default connect(mapStateToProps)(HomeScreen)
